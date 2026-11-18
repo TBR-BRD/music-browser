@@ -23,6 +23,7 @@ Die Webseite ist rein statisch und läuft auf **GitHub Pages**, ohne eigenen Ser
 - **Datum und Uhrzeit** oben rechts
 - **Wetter** wie bei onradio-cover-bridge: aktuell mit Luftdruck und Tendenz (↑ → ↓), dazu Heute und Morgen mit Niederschlag (Open-Meteo)
 - **QR-Code** oben rechts zum Weitergeben der Seite an Freunde; ein Klick vergrößert ihn
+- **Als App speichern:** Wer die Seite über den QR-Code oder zum ersten Mal auf dem Handy öffnet, bekommt das Speichern auf dem Startbildschirm angeboten. Unter Android/Chrome genügt ein Tipp auf „Speichern“, auf iPhone/iPad erklärt der Hinweis den Weg über „Teilen → Zum Home-Bildschirm“. „Später“ blendet ihn für 30 Tage aus. Die Seite läuft dann wie eine App im Vollbild.
 - **Zwei Ansichten:** Voll (Desktop/TV) und Mobil. Sie schalten sich automatisch nach Bildschirmbreite um. Der Button 🔄/🖥️/📱 schaltet zwischen Auto, Voll und Mobil.
 - **Einstellungen:** Ort für das Wetter und Dunkel-/Hell-Modus
 - **Chromecast / Google Cast** in Chrome und Edge
@@ -74,6 +75,8 @@ js/weather.js       Wetter (Open-Meteo)
 assets/             Icon, QR-Code, Wettersymbole (aus onradio-cover-bridge)
 js/cast.js          Google Cast
 js/storage.js       Einstellungen und Favoriten (localStorage)
+js/install.js       Angebot „Als App speichern“
+manifest.webmanifest, sw.js   Installierbare Web-App (PWA)
 proxy/worker.js     Optionaler Metadaten-Helfer (Cloudflare Worker)
 ```
 

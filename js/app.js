@@ -5,6 +5,7 @@ import { findCover, stationPlaceholder, colorFor, initials } from "./cover.js";
 import { fetchWeather, renderWeather } from "./weather.js";
 import { initCast, isCasting, castStream, castSetVolume, castStop } from "./cast.js";
 import { GROUP_LABELS, GROUP_ORDER_LAST } from "./config.js";
+import { initInstall } from "./install.js";
 
 const $ = (id) => document.getElementById(id);
 const el = {
@@ -409,6 +410,7 @@ if ("mediaSession" in navigator) {
 // ---------------------------------------------------------------- Start
 
 async function init() {
+  initInstall();
   applyTheme();
   applyView();
   tickClock();
