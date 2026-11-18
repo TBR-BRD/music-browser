@@ -4,8 +4,9 @@
 //   /icy?url=<stream>   liest den ICY-StreamTitle aus einem Radiostream (m3u/pls werden aufgelöst)
 //   /raw?url=<url>      holt kleine Text-/JSON-Dateien (ON-Radio-JSON, m3u, pls) und setzt CORS
 //
-// Variablen (Settings → Variables):
+// Variablen (optional, Settings → Variables and Secrets):
 //   ALLOWED_ORIGINS  kommagetrennt, z. B. "https://tbr-brd.github.io,https://music.lets-make.de"
+//   Ohne Variable ist nur https://tbr-brd.github.io erlaubt.
 
 const RAW_LIMIT = 256 * 1024;      // max. Bytes für /raw
 const ICY_MAX_BLOCKS = 3;          // max. Metadatenblöcke, die gelesen werden
@@ -27,9 +28,14 @@ export default {
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
     if (request.method !== "GET") return json({ error: "method not allowed" }, 405, cors);
-    if (!originOk) return json({ error: "origin not allowed" }, 403, cors);
 
     const url = new URL(request.url);
+    // Testseite: https://<worker>.workers.dev/ im Browser öffnen
+    if (url.pathname === "/") {
+      return json({ ok: true, service: "music-browser-proxy", endpoints: ["/icy?url=", "/raw?url="], allowedOrigins: allowed }, 200, cors);
+    }
+    if (!originOk) return json({ error: "origin not allowed" }, 403, cors);
+
     let target;
     try {
       target = validateTarget(url.searchParams.get("url"));

@@ -313,7 +313,11 @@ export async function fetchNowPlaying(station) {
     if (station.group === "HIT RADIO FFH") return await fetchFfh(station);
     if (station.group === "ENERGY") return await fetchEnergy(station);
     if (regiocastApi(station)) return await fetchRegiocast(station);
-    if (radionetzMount(station)) return await fetchRadionetz(station);
+    if (radionetzMount(station)) {
+      const np = await fetchRadionetz(station);
+      if (np || !proxyUrl) return np;
+      // sonst weiter über den Helfer (ON-Radio-JSON)
+    }
     switch (station.metadataMode) {
       case "0nradio_json": return await fetchOnRadio(station, proxyUrl);
       case "icy_stream": return await fetchIcy(station, proxyUrl);
@@ -327,6 +331,7 @@ export async function fetchNowPlaying(station) {
 
 /** Liefert dieser Sender im Browser Titel und Cover? */
 export function hasLiveMetadata(station) {
+  if (METADATA_PROXY) return true;
   if (["HIT RADIO FFH", "ENERGY"].includes(station.group)) return true;
   if (regiocastApi(station)) return true;
   const mount = radionetzMount(station);
