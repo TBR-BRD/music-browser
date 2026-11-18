@@ -344,6 +344,7 @@ el.volume.addEventListener("input", () => setVolume(el.volume.value / 100));
 el.view.addEventListener("click", cycleView);
 $("btnSettings").addEventListener("click", openSettings);
 $("btnQr").addEventListener("click", () => $("qrDialog").showModal());
+$("qrHint").addEventListener("click", () => $("qrDialog").showModal());
 $("btnCopyLink").addEventListener("click", async (e) => {
   const url = "https://tbr-brd.github.io/music-browser/";
   try {

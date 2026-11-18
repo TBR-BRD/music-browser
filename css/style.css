@@ -182,6 +182,14 @@ google-cast-launcher { --connected-color: var(--accent); --disconnected-color: v
 }
 .qr-btn img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
 .qr-btn:hover { transform: scale(1.05); }
+.qr-hint {
+  display: inline-flex; align-items: center; gap: 6px; margin-right: -6px;
+  background: none; border: 0; padding: 4px 0; cursor: pointer;
+  color: var(--accent); font-weight: 700; font-size: 14px; white-space: nowrap;
+}
+.qr-arrow { display: inline-block; font-size: 20px; animation: qr-nudge 1.4s ease-in-out infinite; }
+@keyframes qr-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .qr-arrow { animation: none; } }
 .qr-dialog form { align-items: center; text-align: center; }
 .qr-big { width: min(300px, 70vw); background: #fff; padding: 10px; border-radius: 1rem; image-rendering: pixelated; }
 .qr-url { font-weight: 600; font-size: 16px; }
@@ -224,7 +232,7 @@ body.view-mobile .topright { grid-row: 1; grid-column: 2; }
 body.view-mobile .date .long, body.view-full .date .short { display: none; }
 body.view-mobile #btnView .txt { display: none; }
 body.view-mobile .topright { gap: 8px; }
-body.view-mobile .topright .bmc, body.view-mobile .qr-btn { display: none; }
+body.view-mobile .topright .bmc, body.view-mobile .qr-btn, body.view-mobile .qr-hint { display: none; }
 body.view-mobile .weather { width: 100%; text-align: left; margin-top: 16px; }
 body.view-mobile .clock { font-size: 20px; }
 body.view-mobile #btnView { padding: 6px 9px; }
