@@ -41,6 +41,7 @@
         <div id="date" class="date"></div>
       </div>
       <button id="btnView" class="pill-btn" title="Ansicht umschalten">🖥️ Auto</button>
+      <button id="btnHelp" class="icon-btn" title="Hilfe – so funktioniert's" aria-label="Hilfe">❓</button>
       <button id="btnSettings" class="icon-btn" title="Einstellungen" aria-label="Einstellungen">⚙️</button>
       <a class="bmc" href="https://www.buymeacoffee.com/thoralf.brandt" target="_blank" rel="noopener" title="Buy me a coffee">
         <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="36">
@@ -106,6 +107,92 @@
         <button type="button" id="btnCopyLink" class="secondary">Link kopieren</button>
         <button value="close">Schließen</button>
       </div>
+    </form>
+  </dialog>
+
+  <dialog id="helpDialog" class="settings help-dialog">
+    <form method="dialog">
+      <h2>❓ So funktioniert Dein Music Browser</h2>
+
+      <details open>
+        <summary>📻 Sender auswählen und abspielen</summary>
+        <ul>
+          <li>Oben bzw. links einen <b>Anbieter</b> antippen (z. B. ANTENNE BAYERN) – darunter erscheinen seine Sender.</li>
+          <li>Einen <b>Sender antippen</b> – er startet sofort.</li>
+          <li><b>▶ / ⏸</b> startet bzw. stoppt, <b>⏮ ⏭</b> springen zum vorigen/nächsten Sender desselben Anbieters.</li>
+          <li>Der Schieberegler stellt die <b>Lautstärke</b> ein.</li>
+          <li>Die <b>Suche</b> durchsucht alle Sender, auch mit mehreren Wörtern, z. B. „bob rock“.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>⭐ Favoriten</summary>
+        <ul>
+          <li>Beim laufenden Sender auf <b>☆</b> tippen – er wird zum Favoriten (★).</li>
+          <li>Alle Favoriten findest du unter dem Anbieter-Button <b>★ Favoriten</b>.</li>
+          <li>Favoriten werden <b>nur in diesem Browser</b> gespeichert. Auf einem anderen Gerät sind sie nicht vorhanden.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>🎵 Titel und Cover</summary>
+        <ul>
+          <li>Bei den meisten Anbietern siehst du den <b>laufenden Titel mit Cover</b>; er aktualisiert sich alle 15 Sekunden.</li>
+          <li>Absolut Radio liefert keine Titel – dort erscheint das Senderlogo.</li>
+          <li>Bei Moderation oder Nachrichten steht statt eines Liedes der Sender bzw. die Sendung.</li>
+          <li>Hinweis „liefert gerade keine aktuellen Titelinfos“: Die Titel-Daten des Senders hängen gerade. Die Musik läuft trotzdem weiter.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>🔊 Auf Lautsprecher streamen</summary>
+        <ul>
+          <li>Auf <b>🔊 Lautsprecher</b> tippen und das Gerät auswählen.</li>
+          <li><b>iPhone, iPad, Mac:</b> AirPlay (HomePod, Apple TV, AirPlay-2-Lautsprecher).</li>
+          <li><b>Chrome/Edge am Computer, Chrome auf Android:</b> Chromecast und Google Nest.</li>
+          <li><b>Bluetooth:</b> Lautsprecher im System verbinden – der Ton folgt automatisch.</li>
+          <li>Gerät und Handy/Computer müssen im <b>selben WLAN</b> sein. Solange gestreamt wird, leuchtet der Button.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>📱 Als App speichern und weitergeben</summary>
+        <ul>
+          <li><b>Android:</b> im Hinweis auf „Speichern“ tippen.</li>
+          <li><b>iPhone/iPad:</b> Teilen <span class="ios-share">⬆︎</span> → „Zum Home-Bildschirm“ → „Hinzufügen“ (in Safari ggf. erst <b>•••</b>).</li>
+          <li><b>Weitergeben:</b> oben rechts auf den <b>QR-Code</b> klicken – Freunde scannen ihn mit der Handykamera.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>🖥️ Ansicht und Einstellungen</summary>
+        <ul>
+          <li>Der Button <b>🔄 Auto / 🖥️ Voll / 📱 Mobil</b> wechselt die Ansicht. „Auto“ wählt passend zur Bildschirmbreite.</li>
+          <li><b>⚙️ Einstellungen:</b> Ort für das Wetter und Dunkel-/Hell-Modus.</li>
+          <li>Das Wetter zeigt aktuell, Heute und Morgen; der Pfeil beim Luftdruck zeigt die Tendenz der letzten 3 Stunden.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>⌨️ Tastatur</summary>
+        <ul>
+          <li><b>Leertaste:</b> Abspielen / Stopp</li>
+          <li><b>Alt + → / Alt + ←:</b> nächster / vorheriger Sender</li>
+          <li><b>? oder F1:</b> diese Hilfe öffnen</li>
+          <li>Medientasten der Tastatur bzw. des Kopfhörers funktionieren ebenfalls.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>🔒 Datenschutz</summary>
+        <ul>
+          <li>Kein Konto, kein Tracking. Einstellungen und Favoriten bleiben in deinem Browser.</li>
+          <li>Geladen werden nur Streams und Titel der Sender, Cover (iTunes/Sender) und das Wetter (Open-Meteo).</li>
+        </ul>
+      </details>
+
+      <p class="muted small help-foot">Fragen oder Ideen? <a href="https://github.com/TBR-BRD/music-browser" target="_blank" rel="noopener">Projekt auf GitHub</a> · <a href="https://www.buymeacoffee.com/thoralf.brandt" target="_blank" rel="noopener">☕ Buy me a coffee</a></p>
+      <div class="dialog-actions"><button value="close">Schließen</button></div>
     </form>
   </dialog>
 

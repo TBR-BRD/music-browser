@@ -25,6 +25,7 @@ The site is purely static and runs on **GitHub Pages**: no server of your own, r
 - **QR code** at the top right for sharing the site with friends; click to enlarge
 - **Save as an app:** Opening the site via the QR code, or on a phone for the first time, shows an offer to save it to the home screen. On Android/Chrome one tap on "Speichern" (save) is enough; on iPhone/iPad the hint explains the way via "Share → Add to Home Screen". "Später" (later) hides it for 30 days. The site then runs full-screen like an app.
 - **Two views:** full (desktop/TV) and mobile. They switch automatically by screen width; the 🔄/🖥️/📱 button cycles through auto, full and mobile.
+- **❓ Help** at the top right (or `?`/`F1` key): user guide with expandable sections (in German)
 - **Settings:** weather location and dark/light mode
 - **🔊 Speaker button:** streams to speakers – via **AirPlay** on iPhone, iPad and Mac (HomePod, Apple TV, AirPlay 2 speakers such as newer Sonos), via **Chromecast/Google Cast** in Chrome and Edge on the computer, and via Cast in Chrome on Android. Bluetooth speakers are connected in the operating system; audio follows automatically.
 - Media keys and lock-screen info (Media Session API); space bar = play/stop

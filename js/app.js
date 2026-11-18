@@ -377,6 +377,7 @@ el.volume.addEventListener("input", () => setVolume(el.volume.value / 100));
 el.view.addEventListener("click", cycleView);
 $("btnSettings").addEventListener("click", openSettings);
 $("btnQr").addEventListener("click", () => $("qrDialog").showModal());
+$("btnHelp").addEventListener("click", () => $("helpDialog").showModal());
 $("qrHint").addEventListener("click", () => $("qrDialog").showModal());
 $("btnCopyLink").addEventListener("click", async (e) => {
   const url = "https://tbr-brd.github.io/music-browser/";
@@ -407,8 +408,9 @@ el.audio.addEventListener("playing", () => {
 });
 
 document.addEventListener("keydown", (e) => {
-  if (e.target.matches("input, select, textarea") || el.settings.open) return;
+  if (e.target.matches("input, select, textarea") || document.querySelector("dialog[open]")) return;
   if (e.code === "Space") { e.preventDefault(); togglePlay(); }
+  if (e.key === "?" || e.key === "F1") { e.preventDefault(); $("helpDialog").showModal(); }
   if (e.code === "ArrowRight" && e.altKey) step(1);
   if (e.code === "ArrowLeft" && e.altKey) step(-1);
 });

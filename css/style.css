@@ -242,7 +242,9 @@ body.view-mobile .topright .bmc, body.view-mobile .qr-btn, body.view-mobile .qr-
 body.view-mobile .weather { width: 100%; text-align: left; margin-top: 16px; }
 body.view-mobile .clock { font-size: 20px; }
 body.view-mobile #btnView { padding: 6px 9px; }
-body.view-mobile .icon-btn:not(.round) { width: 36px; height: 36px; }
+body.view-mobile .icon-btn:not(.round) { width: 34px; height: 34px; }
+body.view-mobile .topright { gap: 6px; }
+body.view-mobile .brand span { font-size: 14px; line-height: 1.1; max-width: 92px; white-space: normal; }
 body.view-mobile .providers {
   grid-row: 2; grid-column: 1 / -1; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
   margin: 0 -14px; padding: 0 14px 2px;
@@ -316,3 +318,14 @@ body.view-full .footer .bmc { display: none; }
 }
 @keyframes point-up { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 @media (prefers-reduced-motion: reduce) { .install-banner.point-up::after { animation: none; } }
+
+/* ---------- Hilfe ---------- */
+.help-dialog { width: min(620px, 94vw); max-height: 88vh; }
+.help-dialog form { gap: 10px; }
+.help-dialog details { border: 1px solid var(--border); border-radius: 0.8rem; background: var(--panel-soft); }
+.help-dialog summary { cursor: pointer; padding: 11px 14px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; }
+.help-dialog summary::-webkit-details-marker { display: none; }
+.help-dialog summary::after { content: "＋"; color: var(--accent); }
+.help-dialog details[open] summary::after { content: "－"; }
+.help-dialog ul { margin: 0; padding: 0 16px 12px 34px; display: grid; gap: 6px; font-size: 14px; line-height: 1.45; }
+.help-foot { margin-top: 4px !important; }
