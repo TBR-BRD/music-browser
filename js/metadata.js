@@ -98,6 +98,24 @@ const REGIOCAST_APIS = {
   "stream.sunshine-live.de": "https://www.sunshine-live.de/streams/api",
 };
 const regiocastCache = new Map(); // api -> { at, data }
+// Erkennung „Schnittstelle hängt“: Ändert sich bei KEINEM Kanal des Anbieters
+// mehrere Minuten lang irgendein Titel, sind die Daten eingefroren (passiert
+// beim Anbieter gelegentlich). Dann lieber Senderlogo statt falschem Cover.
+const FROZEN_AFTER_MS = 7 * 60 * 1000;
+const regiocastHealth = new Map(); // api -> { sig, since, firstSeen }
+
+function trackFreshness(api, data) {
+  const sig = Object.values(data || {})
+    .map((e) => `${e?.station_id}:${e?.artist_name}:${e?.song_title}`)
+    .join("|");
+  const now = Date.now();
+  const h = regiocastHealth.get(api);
+  if (!h || h.sig !== sig) {
+    regiocastHealth.set(api, { sig, since: now });
+    return true;
+  }
+  return now - h.since < FROZEN_AFTER_MS;
+}
 
 function regiocastApi(station) {
   try {
@@ -121,8 +139,8 @@ async function regiocastEntry(station) {
   const cached = regiocastCache.get(api);
   let data = cached?.data;
   if (!data || Date.now() - cached.at > 10000) {
-    data = await fetchJson(api);
-    regiocastCache.set(api, { at: Date.now(), data });
+    data = await fetchJson(`${api}?_=${Date.now()}`);
+    regiocastCache.set(api, { at: Date.now(), data, fresh: trackFreshness(api, data) });
   }
   const entries = Object.values(data || {}).filter((e) => e && typeof e === "object");
   const mount = streamMount(station.audioUrl);
@@ -138,6 +156,7 @@ async function regiocastEntry(station) {
 async function fetchRegiocast(station) {
   const match = await regiocastEntry(station);
   if (!match) return null;
+  if (regiocastCache.get(regiocastApi(station))?.fresh === false) return { stale: true };
   const artist = fixEncoding(firstText(match, ["artist_name", "artist", "artistName"]));
   const title = fixEncoding(firstText(match, ["song_title", "title", "songTitle"]));
   if (!artist || !title) return null;
@@ -247,8 +266,8 @@ async function fetchIcy(station, proxyUrl) {
 }
 
 /**
- * Liefert {artist, title, coverUrl} oder null, wenn für diesen Sender
- * (gerade) keine Titelinfo verfügbar ist.
+ * Liefert {artist, title, coverUrl}, null (keine Titelinfo) oder
+ * {stale: true}, wenn die Schnittstelle des Anbieters gerade eingefroren ist.
  */
 export async function fetchNowPlaying(station) {
   const proxyUrl = METADATA_PROXY;

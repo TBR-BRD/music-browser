@@ -178,6 +178,18 @@ async function pollMetadata() {
   const np = await fetchNowPlaying(station);
   if (station !== state.current || !np) return;
 
+  if (np.stale) {
+    // Anbieter liefert seit Minuten dieselben Daten – nichts Veraltetes anzeigen
+    if (state.nowPlaying) {
+      state.nowPlaying = null;
+      renderTrack();
+      showStationCover(station);
+    }
+    setStatus("Der Sender liefert gerade keine aktuellen Titelinfos – die Musik läuft weiter.");
+    return;
+  }
+  if (el.status.textContent.startsWith("Der Sender liefert gerade")) setStatus("");
+
   const changed = !state.nowPlaying || np.artist !== state.nowPlaying.artist || np.title !== state.nowPlaying.title;
   if (!changed) return;
 
