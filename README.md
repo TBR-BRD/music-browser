@@ -2,7 +2,7 @@
 
 🇩🇪 Deutsch · [🇬🇧 English](README_EN.md)
 
-Radio direkt im Browser: **rund 290 Sender** von 9 Anbietern, mit großem Albumcover, aktuellem Titel, Datum, Uhrzeit und Wetter. Abspielen kannst du im Browserfenster oder per **AirPlay und Chromecast** auf Lautsprechern.
+Radio direkt im Browser: **rund 290 Sender** von 10 Anbietern, mit großem Albumcover, aktuellem Titel, Datum, Uhrzeit und Wetter. Abspielen kannst du im Browserfenster oder per **AirPlay und Chromecast** auf Lautsprechern.
 
 Die Webseite ist rein statisch und läuft auf **GitHub Pages**, ohne eigenen Server und weltweit erreichbar.
 
@@ -16,7 +16,7 @@ Die Webseite ist rein statisch und läuft auf **GitHub Pages**, ohne eigenen Ser
 
 ## Funktionen
 
-- **Anbieter-Buttons** (in der Vollansicht links über den Sendern): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Eigene und ★ Favoriten. Darunter stehen nur die Sender des gewählten Anbieters.
+- **Anbieter-Buttons** (in der Vollansicht links über den Sendern): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Eigene und ★ Favoriten. Darunter stehen nur die Sender des gewählten Anbieters.
 - **Suche** über alle Sender, auch mit mehreren Wörtern (z. B. „bob rock“)
 - **Favoriten** per ☆ beim laufenden Sender
 - **Großes Cover und aktueller Titel** bei 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH und ENERGY, direkt von deren Schnittstellen und sonst über die iTunes-Suche. Ohne laufenden Titel erscheint das Senderlogo des Anbieters.
@@ -48,6 +48,7 @@ Eine Webseite darf Daten fremder Server nur lesen, wenn der Anbieter das erlaubt
 | ON Radio | ✅ 7 Sender direkt, die übrigen über den Helfer |
 | ANTENNE BAYERN | ✅ über den Helfer, mit Cover von antenne.de |
 | Eigene | ✅ über den Helfer (Titel bzw. laufende Sendung aus dem Stream) |
+| Beats Radio | ✅ direkt über streamABC, mit Cover |
 | Absolut Radio | ❌ der Sender liefert keine Titel – es erscheint das Senderlogo |
 
 Für die Anbieter, die fremde Webseiten sperren, nutzt die Seite einen kleinen **Helfer**: den kostenlosen Cloudflare Worker aus [`proxy/worker.js`](proxy/worker.js). Er holt die Titel ab und gibt sie nur an diese Seite weiter (Adresse in `js/config.js` → `METADATA_PROXY`). Wer die Seite forkt, richtet sich einen eigenen Worker ein oder lässt `METADATA_PROXY` leer – dann fehlen nur bei diesen Anbietern die Titel.

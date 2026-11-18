@@ -58,3 +58,13 @@ export const STATION_LOGOS = {
 
 /** Gruppen ohne brauchbare Titel im Stream (dort nur Sendername) – nicht abfragen. */
 export const NO_METADATA_GROUPS = ["Absolut Radio"];
+
+/**
+ * streamABC-Kanäle (Klassik Radio / Beats Radio): Titel, Interpret und Cover
+ * kommen von https://api.streamabc.net/metadata/channel/<key>.json (CORS erlaubt).
+ */
+export const STREAMABC_CHANNELS = {
+  "beats-radio": "klr_3xcmcf19meu_83wq",
+  "beats-radio-nu-disco": "klr_qohdzgv3jpl_mzy9",
+  "beats-radio-chillout-beats": "klr_jk3tmcvoltq_szz1",
+};

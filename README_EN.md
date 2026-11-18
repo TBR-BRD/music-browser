@@ -2,7 +2,7 @@
 
 [🇩🇪 Deutsch](README.md) · 🇬🇧 English
 
-Radio right in your browser: **around 290 stations** from 9 providers, with large album art, the current track, date, time and weather. Play in the browser window or on speakers via **AirPlay and Chromecast**.
+Radio right in your browser: **around 290 stations** from 10 providers, with large album art, the current track, date, time and weather. Play in the browser window or on speakers via **AirPlay and Chromecast**.
 
 The site is purely static and runs on **GitHub Pages**: no server of your own, reachable worldwide.
 
@@ -16,7 +16,7 @@ The site is purely static and runs on **GitHub Pages**: no server of your own, r
 
 ## Features
 
-- **Provider buttons** (in the full view on the left above the stations): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.
+- **Provider buttons** (in the full view on the left above the stations): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.
 - **Search** across all stations, including multiple words (e.g. "bob rock")
 - **Favorites** via ☆ on the playing station
 - **Large cover and current track** for 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH and ENERGY, straight from their APIs, otherwise via the iTunes search. Without a current track, the provider's station logo is shown.
@@ -48,6 +48,7 @@ A web page may only read data from other servers if the provider allows it (CORS
 | ON Radio | ✅ 7 stations directly, the rest via the helper |
 | ANTENNE BAYERN | ✅ via the helper, with covers from antenne.de |
 | Eigene | ✅ via the helper (track or current show from the stream) |
+| Beats Radio | ✅ directly via streamABC, with covers |
 | Absolut Radio | ❌ the station sends no track titles – its logo is shown instead |
 
 For providers that block other websites, the site uses a small **helper**: the free Cloudflare Worker in [`proxy/worker.js`](proxy/worker.js). It fetches the titles and passes them only to this site (address in `js/config.js` → `METADATA_PROXY`). If you fork the site, set up your own worker or leave `METADATA_PROXY` empty – then only these providers lack titles.

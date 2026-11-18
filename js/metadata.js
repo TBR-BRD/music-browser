@@ -4,12 +4,13 @@
 //   FFH      -> ffh.de "getallsonginfo" (alle FFH-Kanäle in einer Anfrage)
 //   ENERGY   -> api.nrjnet.de (mit Cover)
 //   ON Radio -> Icecast-Status von s6.radionetz.de (7 der 18 Sender)
+//   Beats Radio -> api.streamabc.net (mit Cover)
 // Über den Helfer (METADATA_PROXY, Cloudflare Worker):
 //   ANTENNE BAYERN -> antenne.de/api/metadata/now (alle Kanäle, mit Cover)
 //   übrige ON-Sender -> ON-Radio-JSON
 //   Eigene -> ICY-Titel aus dem Stream
 // Absolut Radio: im Stream steht nur der Sendername -> Senderlogo als Cover
-import { METADATA_PROXY, DIRECT_AUDIO, STATION_LOGOS, NO_METADATA_GROUPS } from "./config.js";
+import { METADATA_PROXY, DIRECT_AUDIO, STATION_LOGOS, NO_METADATA_GROUPS, STREAMABC_CHANNELS } from "./config.js";
 
 const FFH_URL =
   "https://www.ffh.de/update-onair-info?tx_ffhonair_pi2%5Baction%5D=getallsonginfo&tx_ffhonair_pi2%5Bcontroller%5D=Webradio&type=210";
@@ -250,6 +251,18 @@ async function fetchAntenne(station, proxyUrl) {
   return { artist, title, coverUrl };
 }
 
+// ---------- streamABC (Beats Radio) ----------
+async function fetchStreamAbc(station) {
+  const key = STREAMABC_CHANNELS[station.id];
+  const data = await fetchJson(`https://api.streamabc.net/metadata/channel/${key}.json?_=${Date.now()}`);
+  const artist = fixEncoding(data?.artist);
+  const title = fixEncoding(data?.song || data?.title);
+  if (!artist || !title) return null;
+  // Cover-URL enthält ein Senderlogo als Ersatz („default=…“), falls es kein Albumcover gibt
+  const coverUrl = data?.images?.large?.url || data?.cover || null;
+  return { artist, title, coverUrl };
+}
+
 // ---------- HIT RADIO FFH ----------
 let ffhCache = { at: 0, data: null };
 
@@ -354,6 +367,7 @@ export async function fetchNowPlaying(station) {
     if (station.group === "HIT RADIO FFH") return await fetchFfh(station);
     if (station.group === "ENERGY") return await fetchEnergy(station);
     if (NO_METADATA_GROUPS.includes(station.group)) return null;
+    if (STREAMABC_CHANNELS[station.id]) return await fetchStreamAbc(station);
     if (regiocastApi(station)) return await fetchRegiocast(station);
     if (antenneMount(station)) return await fetchAntenne(station, proxyUrl);
     if (radionetzMount(station)) {
@@ -375,6 +389,7 @@ export async function fetchNowPlaying(station) {
 /** Liefert dieser Sender im Browser Titel und Cover? */
 export function hasLiveMetadata(station) {
   if (NO_METADATA_GROUPS.includes(station.group)) return false;
+  if (STREAMABC_CHANNELS[station.id]) return true;
   if (METADATA_PROXY) return true;
   if (["HIT RADIO FFH", "ENERGY"].includes(station.group)) return true;
   if (regiocastApi(station)) return true;
