@@ -296,3 +296,15 @@ body.view-full .footer .bmc { display: none; }
 }
 @keyframes point-down { 0%, 100% { translate: 0 0; } 50% { translate: 0 10px; } }
 @media (prefers-reduced-motion: reduce) { .install-banner.point-down::after { animation: none; } }
+.install-banner.point-up {
+  top: max(64px, calc(env(safe-area-inset-top) + 56px)); bottom: auto;
+  transform: translateY(-160%);
+}
+.install-banner.point-up.open { transform: translateY(0); }
+.install-banner.point-up::after {
+  content: "↑"; position: absolute; right: 22px; top: -58px;
+  font: 800 44px system-ui, sans-serif; color: var(--accent); text-shadow: 0 2px 10px rgba(0,0,0,.5);
+  animation: point-up 1.2s ease-in-out infinite;
+}
+@keyframes point-up { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+@media (prefers-reduced-motion: reduce) { .install-banner.point-up::after { animation: none; } }

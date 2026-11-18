@@ -32,9 +32,9 @@ function render(banner) {
     const chromeIos = /CriOS/i.test(navigator.userAgent);
     text.innerHTML = chromeIos
       ? `<ol class="install-steps">
-          <li>Oben rechts auf <b>Teilen</b> <span class="ios-share">⬆︎</span> tippen</li>
+          <li>Oben in der Adressleiste rechts auf <b>Teilen</b> <span class="ios-share">⬆︎</span> tippen (oder <b>•••</b> → <b>Teilen</b>)</li>
           <li><b>„Zum Home-Bildschirm“</b> wählen</li>
-          <li>Oben rechts auf <b>„Hinzufügen“</b> tippen</li>
+          <li><b>„Hinzufügen“</b> tippen</li>
         </ol>`
       : `<ol class="install-steps">
           <li>Unten auf <b>•••</b> tippen (bzw. direkt auf <b>Teilen</b> <span class="ios-share">⬆︎</span>)</li>
@@ -42,7 +42,10 @@ function render(banner) {
           <li><b>„Hinzufügen“</b> tippen</li>
         </ol>`;
     btn.hidden = true;
+    // Safari: Leiste unten → Hinweis unten mit Pfeil nach unten.
+    // Chrome: Adressleiste oben → Hinweis oben mit Pfeil nach oben rechts.
     banner.classList.toggle("point-down", !chromeIos);
+    banner.classList.toggle("point-up", chromeIos);
   } else {
     text.innerHTML = 'Auf dem Startbildschirm speichern: im Browser-Menü <b>⋮</b> auf <b>„Zum Startbildschirm hinzufügen“</b> bzw. <b>„App installieren“</b> tippen.';
     btn.hidden = true;
