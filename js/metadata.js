@@ -252,10 +252,18 @@ async function fetchAntenne(station, proxyUrl) {
 }
 
 // ---------- streamABC (Beats Radio) ----------
+/** "Kygo feat. Parson James;Kygo" -> "Kygo feat. Parson James" (Doppelte entfernen) */
+function cleanArtists(text) {
+  const parts = String(text || "").split(";").map((p) => p.trim()).filter(Boolean);
+  const keep = parts.filter((p, i) =>
+    !parts.some((q, j) => j !== i && q.toLowerCase().includes(p.toLowerCase()) && (q.length > p.length || j < i)));
+  return keep.join(", ");
+}
+
 async function fetchStreamAbc(station) {
   const key = STREAMABC_CHANNELS[station.id];
   const data = await fetchJson(`https://api.streamabc.net/metadata/channel/${key}.json?_=${Date.now()}`);
-  const artist = fixEncoding(data?.artist);
+  const artist = cleanArtists(fixEncoding(data?.artist));
   const title = fixEncoding(data?.song || data?.title);
   if (!artist || !title) return null;
   // Cover-URL enthält ein Senderlogo als Ersatz („default=…“), falls es kein Albumcover gibt
