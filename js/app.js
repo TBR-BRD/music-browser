@@ -97,8 +97,10 @@ function setCover(src) {
 /** Senderlogo des Anbieters, sonst das erzeugte Sender-Bild. */
 async function showStationCover(station) {
   setCover(stationPlaceholder(station));
+  const request = coverRequest;
   const logo = await fetchStationLogo(station);
-  if (logo && state.current?.id === station.id && !state.nowPlaying?.coverUrl) setCover(logo);
+  // Logo nur zeigen, wenn inzwischen kein Albumcover angefordert wurde
+  if (logo && request === coverRequest && state.current?.id === station.id) setCover(logo);
 }
 
 function renderTrack() {
@@ -183,7 +185,8 @@ async function pollMetadata() {
   const coverUrl = np.coverUrl || (await findCover(np.artist, np.title));
   if (station !== state.current || state.nowPlaying?.title !== np.title) return;
   state.nowPlaying.coverUrl = coverUrl;
-  setCover(coverUrl || stationPlaceholder(station));
+  if (coverUrl) setCover(coverUrl);
+  else showStationCover(station);
   updateMediaSession();
 }
 
