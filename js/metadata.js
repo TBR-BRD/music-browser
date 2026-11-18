@@ -339,8 +339,9 @@ async function fetchIcy(station, proxyUrl) {
   if (/livestream|webradio|\bon air\b/i.test(streamTitle) && !/ - /.test(streamTitle)) return null;
   // rbb-Format: "Livin' On A Prayer" von Bon Jovi
   const von = streamTitle.match(/^["„“](.+?)["“”]\s+von\s+(.+)$/i);
-  if (von) return { artist: von[2].trim(), title: von[1].trim(), coverUrl: null };
-  return { ...splitStreamTitle(streamTitle, station), coverUrl: null };
+  if (von) return { artist: titleCase(von[2].trim()), title: titleCase(von[1].trim()), coverUrl: null };
+  const { artist, title } = splitStreamTitle(streamTitle, station);
+  return { artist: artist === station.name ? artist : titleCase(artist), title: titleCase(title), coverUrl: null };
 }
 
 /**
