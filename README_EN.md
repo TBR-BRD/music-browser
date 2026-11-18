@@ -44,10 +44,12 @@ A web page may only read data from other servers if the provider allows it (CORS
 | Provider | Title and cover in the browser |
 |---|---|
 | 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH, ENERGY | ✅ directly from their APIs |
-| ON Radio | ✅ partly: Hits, Charts, Oldies, Chillout, Relax, Pop, Dance (radionetz Icecast status) |
-| other ON stations, Absolut Radio, ANTENNE BAYERN, Eigene | ❌ station name/logo only; the stream still plays |
+| ON Radio | ✅ 7 stations directly, the rest via the helper |
+| ANTENNE BAYERN | ✅ via the helper, with covers from antenne.de |
+| Eigene | ✅ via the helper (track or current show from the stream) |
+| Absolut Radio | ❌ the station sends no track titles – its logo is shown instead |
 
-If you want titles there too, you can optionally run a small helper, e.g. the Cloudflare Worker in [`proxy/worker.js`](proxy/worker.js), and enter its address as `METADATA_PROXY` in `js/config.js`. It is not required.
+For providers that block other websites, the site uses a small **helper**: the free Cloudflare Worker in [`proxy/worker.js`](proxy/worker.js). It fetches the titles and passes them only to this site (address in `js/config.js` → `METADATA_PROXY`). If you fork the site, set up your own worker or leave `METADATA_PROXY` empty – then only these providers lack titles.
 
 ## Hosting on GitHub Pages
 

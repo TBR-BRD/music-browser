@@ -1,11 +1,11 @@
 // Feste Einstellungen des music-browser.
 
 /**
- * Optionaler Metadaten-Helfer (z. B. Cloudflare Worker aus proxy/worker.js).
- * Leer = nicht benutzt. Ohne Helfer zeigen 80s80s, HIT RADIO FFH und ENERGY
- * trotzdem Titel und Cover, weil deren Schnittstellen Browser-Zugriffe erlauben.
+ * Metadaten-Helfer (Cloudflare Worker aus proxy/worker.js) für Anbieter, die
+ * fremde Webseiten sperren: ANTENNE BAYERN, übrige ON-Sender, Eigene.
+ * Leer lassen = ohne Helfer (80s80s, BOB, Sunshine, FFH, ENERGY gehen trotzdem).
  */
-export const METADATA_PROXY = "";
+export const METADATA_PROXY = "https://music-proxy.cloudflare-radio.workers.dev";
 
 /** Anzeigenamen für Gruppen aus stations.json */
 export const GROUP_LABELS = {
@@ -38,3 +38,23 @@ export const DIRECT_AUDIO = {
 };
 
 export const BMC_URL = "https://www.buymeacoffee.com/thoralf.brandt";
+
+/** Senderlogos als Cover, wenn der Anbieter keine Titel liefert (Absolut Radio). */
+const ABSOLUT_LOGO = (file) => `https://cms.antenne-deutschland.de/api/media/file/${file}`;
+export const STATION_LOGOS = {
+  "absolut-hot": ABSOLUT_LOGO("hot-1.webp"),
+  "absolut-germany": ABSOLUT_LOGO("germany-1.webp"),
+  "absolut-top-2000er": ABSOLUT_LOGO("top-1.webp"),
+  "absolut-relax": ABSOLUT_LOGO("relax-1.webp"),
+  "absolut-bella": ABSOLUT_LOGO("bella-1.webp"),
+  "absolut-classics": ABSOLUT_LOGO("AbsolutClassics_Logo_Kreis-960x960.webp"),
+  "absolut-coffeemusic": ABSOLUT_LOGO("coffeemusic-1.webp"),
+  "absolut-lovesongs": ABSOLUT_LOGO("lovesongs-1.webp"),
+  "absolut-musicxl": ABSOLUT_LOGO("musicxl-1.webp"),
+  "absolut-80er": ABSOLUT_LOGO("80er-1.webp"),
+  "absolut-clubnight": ABSOLUT_LOGO("clubnight-1.webp"),
+  "absolut-rock": ABSOLUT_LOGO("rock-1.webp"),
+};
+
+/** Gruppen ohne brauchbare Titel im Stream (dort nur Sendername) – nicht abfragen. */
+export const NO_METADATA_GROUPS = ["Absolut Radio"];

@@ -44,10 +44,12 @@ Eine Webseite darf Daten fremder Server nur lesen, wenn der Anbieter das erlaubt
 | Anbieter | Titel und Cover im Browser |
 |---|---|
 | 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH, ENERGY | ✅ direkt über deren Schnittstellen |
-| ON Radio | ✅ teilweise: Hits, Charts, Oldies, Chillout, Relax, Pop, Dance (Icecast-Status von radionetz) |
-| übrige ON-Sender, Absolut Radio, ANTENNE BAYERN, Eigene | ❌ nur Sendername bzw. Logo, der Stream läuft trotzdem |
+| ON Radio | ✅ 7 Sender direkt, die übrigen über den Helfer |
+| ANTENNE BAYERN | ✅ über den Helfer, mit Cover von antenne.de |
+| Eigene | ✅ über den Helfer (Titel bzw. laufende Sendung aus dem Stream) |
+| Absolut Radio | ❌ der Sender liefert keine Titel – es erscheint das Senderlogo |
 
-Wer auch dort Titel haben möchte, kann optional einen kleinen Helfer betreiben, z. B. den Cloudflare Worker aus [`proxy/worker.js`](proxy/worker.js). Seine Adresse wird dann in `js/config.js` als `METADATA_PROXY` eingetragen. Nötig ist das nicht.
+Für die Anbieter, die fremde Webseiten sperren, nutzt die Seite einen kleinen **Helfer**: den kostenlosen Cloudflare Worker aus [`proxy/worker.js`](proxy/worker.js). Er holt die Titel ab und gibt sie nur an diese Seite weiter (Adresse in `js/config.js` → `METADATA_PROXY`). Wer die Seite forkt, richtet sich einen eigenen Worker ein oder lässt `METADATA_PROXY` leer – dann fehlen nur bei diesen Anbietern die Titel.
 
 ## Installation auf GitHub Pages
 

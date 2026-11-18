@@ -195,7 +195,8 @@ async function pollMetadata() {
 
   state.nowPlaying = { ...np };
   renderTrack();
-  const coverUrl = np.coverUrl || (await findCover(np.artist, np.title));
+  const isShow = np.artist === station.name; // Sendung/Nachrichten statt Lied
+  const coverUrl = np.coverUrl || (isShow ? null : await findCover(np.artist, np.title));
   if (station !== state.current || state.nowPlaying?.title !== np.title) return;
   state.nowPlaying.coverUrl = coverUrl;
   if (coverUrl) setCover(coverUrl);

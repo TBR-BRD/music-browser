@@ -4,9 +4,12 @@
 //   FFH      -> ffh.de "getallsonginfo" (alle FFH-Kanäle in einer Anfrage)
 //   ENERGY   -> api.nrjnet.de (mit Cover)
 //   ON Radio -> Icecast-Status von s6.radionetz.de (7 der 18 Sender)
-// Nur mit optionalem Helfer (METADATA_PROXY in config.js):
-//   übrige ON-Sender, Absolut, ANTENNE BAYERN, Eigene
-import { METADATA_PROXY, DIRECT_AUDIO } from "./config.js";
+// Über den Helfer (METADATA_PROXY, Cloudflare Worker):
+//   ANTENNE BAYERN -> antenne.de/api/metadata/now (alle Kanäle, mit Cover)
+//   übrige ON-Sender -> ON-Radio-JSON
+//   Eigene -> ICY-Titel aus dem Stream
+// Absolut Radio: im Stream steht nur der Sendername -> Senderlogo als Cover
+import { METADATA_PROXY, DIRECT_AUDIO, STATION_LOGOS, NO_METADATA_GROUPS } from "./config.js";
 
 const FFH_URL =
   "https://www.ffh.de/update-onair-info?tx_ffhonair_pi2%5Baction%5D=getallsonginfo&tx_ffhonair_pi2%5Bcontroller%5D=Webradio&type=210";
@@ -172,6 +175,7 @@ async function fetchRegiocast(station) {
 
 /** Senderlogo (falls der Anbieter eins liefert), z. B. für die Anzeige ohne Titel. */
 export async function fetchStationLogo(station) {
+  if (STATION_LOGOS[station.id]) return STATION_LOGOS[station.id];
   try {
     const entry = await regiocastEntry(station);
     return entry?.stream_logo || null;
@@ -215,6 +219,35 @@ async function fetchRadionetz(station) {
   const raw = fixEncoding(titles.get(radionetzMount(station)) || "");
   if (!raw) return null;
   return { ...splitStreamTitle(raw, station), coverUrl: null };
+}
+
+// ---------- ANTENNE BAYERN (über den Helfer) ----------
+const ANTENNE_NOW = "https://www.antenne.de/api/metadata/now";
+let antenneCache = { at: 0, byMount: null };
+
+function antenneMount(station) {
+  try {
+    const url = new URL(station.audioUrl);
+    return /(^|\.)antenne\.de$/.test(url.hostname) ? url.pathname.split("/").filter(Boolean)[0] : null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchAntenne(station, proxyUrl) {
+  if (!proxyUrl) return null;
+  if (!antenneCache.byMount || Date.now() - antenneCache.at > 10000) {
+    const data = await fetchJson(proxied(proxyUrl, "raw", ANTENNE_NOW));
+    antenneCache = { at: Date.now(), byMount: new Map((data?.data || []).map((d) => [d.mountpoint, d])) };
+  }
+  const d = antenneCache.byMount.get(antenneMount(station));
+  if (!d || d.class !== "Music") return null;
+  const artist = fixEncoding(d.artist);
+  const title = fixEncoding(d.title);
+  if (!artist || !title) return null;
+  const c = d.cover;
+  const coverUrl = c?.baseurl && c?.filename ? `${c.baseurl}600x600/${c.filename}.jpg` : null;
+  return { artist, title, coverUrl };
 }
 
 // ---------- HIT RADIO FFH ----------
@@ -298,8 +331,15 @@ async function fetchOnRadio(station, proxyUrl) {
 async function fetchIcy(station, proxyUrl) {
   if (!proxyUrl) return null;
   const data = await fetchJson(proxied(proxyUrl, "icy", station.metadataUrl || station.audioUrl), 12000);
-  const streamTitle = fixEncoding(data?.streamTitle || "");
+  const streamTitle = fixEncoding(data?.streamTitle || "").trim();
   if (!streamTitle) return null;
+  // Viele Sender schicken nur ihren Namen bzw. einen Slogan – das ist kein Titel.
+  const norm = (t) => String(t || "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+  if ([data?.icyName, station.name].some((n) => n && norm(n) === norm(streamTitle))) return null;
+  if (/livestream|webradio|\bon air\b/i.test(streamTitle) && !/ - /.test(streamTitle)) return null;
+  // rbb-Format: "Livin' On A Prayer" von Bon Jovi
+  const von = streamTitle.match(/^["„“](.+?)["“”]\s+von\s+(.+)$/i);
+  if (von) return { artist: von[2].trim(), title: von[1].trim(), coverUrl: null };
   return { ...splitStreamTitle(streamTitle, station), coverUrl: null };
 }
 
@@ -312,7 +352,9 @@ export async function fetchNowPlaying(station) {
   try {
     if (station.group === "HIT RADIO FFH") return await fetchFfh(station);
     if (station.group === "ENERGY") return await fetchEnergy(station);
+    if (NO_METADATA_GROUPS.includes(station.group)) return null;
     if (regiocastApi(station)) return await fetchRegiocast(station);
+    if (antenneMount(station)) return await fetchAntenne(station, proxyUrl);
     if (radionetzMount(station)) {
       const np = await fetchRadionetz(station);
       if (np || !proxyUrl) return np;
@@ -331,6 +373,7 @@ export async function fetchNowPlaying(station) {
 
 /** Liefert dieser Sender im Browser Titel und Cover? */
 export function hasLiveMetadata(station) {
+  if (NO_METADATA_GROUPS.includes(station.group)) return false;
   if (METADATA_PROXY) return true;
   if (["HIT RADIO FFH", "ENERGY"].includes(station.group)) return true;
   if (regiocastApi(station)) return true;
