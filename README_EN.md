@@ -44,7 +44,8 @@ A web page may only read data from other servers if the provider allows it (CORS
 | Provider | Title and cover in the browser |
 |---|---|
 | 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH, ENERGY | ✅ directly from their APIs |
-| ON Radio, Absolut Radio, ANTENNE BAYERN, Eigene | ❌ station name only; the stream still plays |
+| ON Radio | ✅ partly: Hits, Charts, Oldies, Chillout, Relax, Pop, Dance (radionetz Icecast status) |
+| other ON stations, Absolut Radio, ANTENNE BAYERN, Eigene | ❌ station name/logo only; the stream still plays |
 
 If you want titles there too, you can optionally run a small helper, e.g. the Cloudflare Worker in [`proxy/worker.js`](proxy/worker.js), and enter its address as `METADATA_PROXY` in `js/config.js`. It is not required.
 

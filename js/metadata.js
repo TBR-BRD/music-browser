@@ -3,8 +3,9 @@
 //   80s80s, RADIO BOB!, Sunshine Live -> Regiocast-API (mit Cover und Senderlogo)
 //   FFH      -> ffh.de "getallsonginfo" (alle FFH-Kanäle in einer Anfrage)
 //   ENERGY   -> api.nrjnet.de (mit Cover)
+//   ON Radio -> Icecast-Status von s6.radionetz.de (7 der 18 Sender)
 // Nur mit optionalem Helfer (METADATA_PROXY in config.js):
-//   0nradio_json, icy_stream (ON Radio, Absolut, ANTENNE BAYERN, Eigene …)
+//   übrige ON-Sender, Absolut, ANTENNE BAYERN, Eigene
 import { METADATA_PROXY, DIRECT_AUDIO } from "./config.js";
 
 const FFH_URL =
@@ -179,6 +180,43 @@ export async function fetchStationLogo(station) {
   }
 }
 
+// ---------- ON Radio (radionetz, Icecast) ----------
+// Der radionetz-Server s6 gibt seine Icecast-Statusseite für Browser frei.
+// Dort laufen u. a. ON Hits, Charts, Oldies, Chillout, Relax, Pop und Dance.
+// Die übrigen ON-Sender liegen auf Servern ohne diese Freigabe.
+const RADIONETZ_STATUS = "https://s6.radionetz.de/status-json.xsl";
+let radionetzCache = { at: 0, titles: null }; // mount -> "Artist - Title"
+
+async function radionetzTitles() {
+  if (!radionetzCache.titles || Date.now() - radionetzCache.at > 10000) {
+    const data = await fetchJson(RADIONETZ_STATUS);
+    const titles = new Map();
+    for (const src of [].concat(data?.icestats?.source || [])) {
+      try {
+        titles.set(new URL(src.listenurl).pathname, String(src.title || "").trim());
+      } catch { /* ignorieren */ }
+    }
+    radionetzCache = { at: Date.now(), titles };
+  }
+  return radionetzCache.titles;
+}
+
+function radionetzMount(station) {
+  try {
+    const url = new URL(station.audioUrl);
+    return url.hostname.endsWith(".radionetz.de") ? url.pathname : null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchRadionetz(station) {
+  const titles = await radionetzTitles();
+  const raw = fixEncoding(titles.get(radionetzMount(station)) || "");
+  if (!raw) return null;
+  return { ...splitStreamTitle(raw, station), coverUrl: null };
+}
+
 // ---------- HIT RADIO FFH ----------
 let ffhCache = { at: 0, data: null };
 
@@ -275,6 +313,7 @@ export async function fetchNowPlaying(station) {
     if (station.group === "HIT RADIO FFH") return await fetchFfh(station);
     if (station.group === "ENERGY") return await fetchEnergy(station);
     if (regiocastApi(station)) return await fetchRegiocast(station);
+    if (radionetzMount(station)) return await fetchRadionetz(station);
     switch (station.metadataMode) {
       case "0nradio_json": return await fetchOnRadio(station, proxyUrl);
       case "icy_stream": return await fetchIcy(station, proxyUrl);
@@ -290,6 +329,8 @@ export async function fetchNowPlaying(station) {
 export function hasLiveMetadata(station) {
   if (["HIT RADIO FFH", "ENERGY"].includes(station.group)) return true;
   if (regiocastApi(station)) return true;
+  const mount = radionetzMount(station);
+  if (mount) return !radionetzCache.titles || radionetzCache.titles.has(mount);
   return Boolean(METADATA_PROXY);
 }
 

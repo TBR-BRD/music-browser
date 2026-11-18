@@ -44,7 +44,8 @@ Eine Webseite darf Daten fremder Server nur lesen, wenn der Anbieter das erlaubt
 | Anbieter | Titel und Cover im Browser |
 |---|---|
 | 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH, ENERGY | ✅ direkt über deren Schnittstellen |
-| ON Radio, Absolut Radio, ANTENNE BAYERN, Eigene | ❌ nur Sendername, der Stream läuft trotzdem |
+| ON Radio | ✅ teilweise: Hits, Charts, Oldies, Chillout, Relax, Pop, Dance (Icecast-Status von radionetz) |
+| übrige ON-Sender, Absolut Radio, ANTENNE BAYERN, Eigene | ❌ nur Sendername bzw. Logo, der Stream läuft trotzdem |
 
 Wer auch dort Titel haben möchte, kann optional einen kleinen Helfer betreiben, z. B. den Cloudflare Worker aus [`proxy/worker.js`](proxy/worker.js). Seine Adresse wird dann in `js/config.js` als `METADATA_PROXY` eingetragen. Nötig ist das nicht.
 
