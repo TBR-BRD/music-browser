@@ -6,6 +6,8 @@ Radio and music right in your browser: **253 stations** with large album art, th
 
 The site is purely static and runs on **GitHub Pages**: no server of your own, reachable worldwide.
 
+**▶ Live version: [tbr-brd.github.io/music-browser](https://tbr-brd.github.io/music-browser/)**
+
 <br>
 <a href="https://www.buymeacoffee.com/thoralf.brandt" target="_blank">
   <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174">
@@ -53,7 +55,7 @@ A browser may only read data from another site if the provider allows it via COR
 
 1. Create a new repository `music-browser` and upload all files.
 2. **Settings → Pages → Build and deployment**: source "Deploy from a branch", branch `main`, folder `/ (root)`.
-3. After a minute or two the site is live at `https://tbr-brd.github.io/music-browser/`.
+3. After a minute or two the site is live at [tbr-brd.github.io/music-browser](https://tbr-brd.github.io/music-browser/).
 4. Optionally use your own domain, e.g. `music.lets-make.de`: add a CNAME record at your DNS provider pointing to `tbr-brd.github.io`, enter it under **Settings → Pages → Custom domain**, then enable "Enforce HTTPS".
 
 ## Metadata proxy (Cloudflare Worker, free)

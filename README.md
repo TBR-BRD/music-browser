@@ -6,6 +6,8 @@ Radio und Musik direkt im Browser: **253 Sender** mit großem Albumcover, aktuel
 
 Die Webseite ist rein statisch und läuft auf **GitHub Pages**, ohne eigenen Server und weltweit erreichbar.
 
+**▶ Live-Version: [tbr-brd.github.io/music-browser](https://tbr-brd.github.io/music-browser/)**
+
 <br>
 <a href="https://www.buymeacoffee.com/thoralf.brandt" target="_blank">
   <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174">
@@ -53,7 +55,7 @@ Ein Browser darf von einer fremden Seite nur Daten lesen, wenn der Anbieter das 
 
 1. Neues Repository `music-browser` anlegen und alle Dateien hochladen.
 2. **Settings → Pages → Build and deployment**: Source „Deploy from a branch“, Branch `main`, Ordner `/ (root)`.
-3. Nach ein bis zwei Minuten läuft die Seite unter `https://tbr-brd.github.io/music-browser/`.
+3. Nach ein bis zwei Minuten läuft die Seite unter [tbr-brd.github.io/music-browser](https://tbr-brd.github.io/music-browser/).
 4. Optional mit eigener Domain, z. B. `music.lets-make.de`: CNAME-Eintrag bei goneo auf `tbr-brd.github.io` setzen und unter **Settings → Pages → Custom domain** eintragen. Danach „Enforce HTTPS“ aktivieren.
 
 ## Metadaten-Proxy (Cloudflare Worker, kostenlos)
