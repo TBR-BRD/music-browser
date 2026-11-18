@@ -207,9 +207,11 @@ async function fetchEnergy(station) {
   const data = await fetchJson(url);
   const artist = fixEncoding(data.artist);
   const title = fixEncoding(data.title);
-  if (!artist || !title) return null;
+  if (!title) return null;
   const images = data.images || {};
   const coverUrl = data.hasCover ? images["600x600"] || images["200x200"] || null : null;
+  // Ohne Interpret läuft eine Moderation/Sendung (z. B. „ENERGY mit Vivi“) – mit Sendungsbild
+  if (!artist) return { artist: station.name, title, coverUrl };
   return { artist: titleCase(artist), title: titleCase(title), coverUrl };
 }
 
