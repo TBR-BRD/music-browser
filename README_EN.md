@@ -16,11 +16,13 @@ The site is purely static and runs on **GitHub Pages**: no server of your own, r
 
 ## Features
 
-- **Provider buttons at the top:** ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.
+- **Provider buttons** (in the full view on the left above the stations): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.
 - **Search** across all stations, including multiple words (e.g. "bob rock")
 - **Favorites** via ☆ on the playing station
 - **Large cover and current track** for 80s80s, HIT RADIO FFH and ENERGY, straight from their APIs, otherwise via the iTunes search
-- **Date and time** at the top right, plus the **weather** (Open-Meteo, current conditions plus three days)
+- **Date and time** at the top right
+- **Weather** as in onradio-cover-bridge: current conditions with air pressure and trend (↑ → ↓), plus today and tomorrow with precipitation (Open-Meteo)
+- **QR code** at the top right for sharing the site with friends; click to enlarge
 - **Two views:** full (desktop/TV) and mobile. They switch automatically by screen width; the 🔄/🖥️/📱 button cycles through auto, full and mobile.
 - **Settings:** weather location and dark/light mode
 - **Chromecast / Google Cast** in Chrome and Edge
@@ -69,6 +71,7 @@ js/stations.js      Load station list (with offline copy)
 js/metadata.js      Title and artist (80s80s, FFH, ENERGY)
 js/cover.js         Cover search (iTunes) and placeholders
 js/weather.js       Weather (Open-Meteo)
+assets/             Icon, QR code, weather icons (from onradio-cover-bridge)
 js/cast.js          Google Cast
 js/storage.js       Settings and favorites (localStorage)
 proxy/worker.js     Optional metadata helper (Cloudflare Worker)

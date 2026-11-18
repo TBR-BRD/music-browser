@@ -26,6 +26,9 @@
     <nav id="providers" class="providers" aria-label="Anbieter"></nav>
 
     <div class="topright">
+      <button id="btnQr" class="qr-btn" title="QR-Code zum Weitergeben" aria-label="QR-Code anzeigen">
+        <img src="assets/qr-music-browser.svg" alt="QR-Code zu tbr-brd.github.io/music-browser">
+      </button>
       <div class="datetime" aria-live="off">
         <div id="clock" class="clock">--:--</div>
         <div id="date" class="date"></div>
@@ -74,10 +77,10 @@
             <input id="volume" type="range" min="0" max="100" value="70" aria-label="Lautstärke">
             <span aria-hidden="true">🔊</span>
           </label>
+
+          <section id="weather" class="weather" aria-label="Wetter"></section>
         </div>
       </div>
-
-      <div id="weather" class="weather" aria-label="Wetter"></div>
     </section>
   </main>
 
@@ -87,6 +90,19 @@
     </a>
     <span class="muted small">Senderliste: <a href="https://github.com/TBR-BRD/radiostations" target="_blank" rel="noopener">TBR-BRD/radiostations</a> · <a href="https://github.com/TBR-BRD/music-browser" target="_blank" rel="noopener">Quellcode</a></span>
   </footer>
+
+  <dialog id="qrDialog" class="settings qr-dialog">
+    <form method="dialog">
+      <h2>Dein Music Browser weitergeben</h2>
+      <img class="qr-big" src="assets/qr-music-browser.svg" alt="QR-Code zu tbr-brd.github.io/music-browser">
+      <p class="qr-url">tbr-brd.github.io/music-browser</p>
+      <p class="muted small">Mit der Handykamera scannen – die Seite öffnet sich direkt im Browser.</p>
+      <div class="dialog-actions">
+        <button type="button" id="btnCopyLink" class="secondary">Link kopieren</button>
+        <button value="close">Schließen</button>
+      </div>
+    </form>
+  </dialog>
 
   <dialog id="settings" class="settings">
     <form method="dialog" id="settingsForm">

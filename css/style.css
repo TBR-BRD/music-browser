@@ -16,6 +16,9 @@
   --danger: #ff7f9d;
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
   --radius: 1.2rem;
+  --inset: rgba(7, 13, 24, 0.42);
+  --inset-border: rgba(255, 255, 255, 0.06);
+  --trend-up: #9fd1ff;
 }
 
 [data-theme="light"] {
@@ -33,6 +36,9 @@
   --on-accent: #ffffff;
   --danger: #d6345a;
   --shadow: 0 18px 50px rgba(30, 50, 100, 0.16);
+  --inset: rgba(225, 233, 247, 0.6);
+  --inset-border: rgba(16, 24, 48, 0.06);
+  --trend-up: #1f58c2;
 }
 
 * { box-sizing: border-box; }
@@ -75,7 +81,11 @@ h1, h2 { margin: 0; }
   background: var(--panel); backdrop-filter: blur(18px);
 }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; white-space: nowrap; }
-.providers { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; min-width: 0; }
+.providers { display: flex; gap: 6px; flex-wrap: wrap; min-width: 0; }
+.topbar .providers { flex: 1; }
+.topright { margin-left: auto; }
+.browser .providers { padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.browser .provider { font-size: 13px; padding: 5px 11px; }
 .provider {
   border: 1px solid var(--border); background: var(--panel-soft); border-radius: 999px;
   padding: 6px 13px; cursor: pointer; white-space: nowrap; font-size: 14px;
@@ -84,17 +94,17 @@ h1, h2 { margin: 0; }
   background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   border-color: transparent; color: var(--on-accent); font-weight: 600;
 }
-.topright { display: flex; align-items: center; gap: 12px; }
+.topright { display: flex; align-items: center; gap: 14px; }
 .datetime { text-align: right; line-height: 1.15; }
 .clock { font-variant-numeric: tabular-nums; font-size: 24px; font-weight: 700; }
 .date { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
 
 /* ---------- Hauptbereich (Vollversion) ---------- */
-.layout { display: grid; grid-template-columns: 340px 1fr; min-height: calc(100vh - 140px); }
+.layout { display: grid; grid-template-columns: 360px 1fr; align-items: start; }
 .browser {
   border-right: 1px solid var(--border); padding: 18px;
   display: flex; flex-direction: column; gap: 12px;
-  position: sticky; top: 66px; height: calc(100vh - 66px); overflow: hidden;
+  position: sticky; top: var(--topbar-h, 82px); height: calc(100vh - var(--topbar-h, 82px)); overflow: hidden;
 }
 .browser-head { display: flex; flex-direction: column; gap: 10px; }
 .provider-title { font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
@@ -132,17 +142,49 @@ h1, h2 { margin: 0; }
 .cast-wrap { width: 36px; height: 36px; }
 google-cast-launcher { --connected-color: var(--accent); --disconnected-color: var(--text); display: block; width: 36px; height: 36px; cursor: pointer; }
 
+/* Wetter – Aufbau wie onradio-cover-bridge */
 .weather {
-  display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
-  background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 16px 20px; box-shadow: var(--shadow);
+  margin-top: 26px; width: min(100%, 440px); padding: 14px;
+  border-radius: var(--radius); background: var(--panel); border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 .weather:empty { display: none; }
-.weather .now { display: flex; align-items: center; gap: 14px; padding-right: 20px; border-right: 1px solid var(--border); }
-.weather .now .icon { font-size: 42px; }
-.weather .now .temp { font-size: 30px; font-weight: 700; }
-.weather .day { text-align: center; min-width: 76px; }
-.weather .day .icon { font-size: 22px; }
+.weather p { margin: 0; }
+.wx-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; margin-bottom: 10px; }
+.wx-eyebrow, .wx-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.wx-location { font-size: 16px; font-weight: 600; }
+.wx-head-icon { width: 44px; height: 44px; }
+.wx-current, .wx-day { background: var(--inset); border: 1px solid var(--inset-border); border-radius: 0.9rem; }
+.wx-current { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: 10px 14px; margin-bottom: 10px; }
+.wx-temp { font-size: 34px; font-weight: 800; line-height: 1; }
+.wx-current-side { display: grid; gap: 3px; justify-items: end; text-align: right; }
+.wx-condition { font-size: 15px; }
+.wx-pressure { font-size: 13px; color: var(--muted); }
+.wx-trend { font-weight: 800; font-size: 15px; margin-left: 2px; }
+.wx-trend.is-up { color: var(--trend-up); }
+.wx-trend.is-down { color: var(--muted); }
+.wx-trend.is-steady { color: var(--muted); }
+.wx-days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.wx-day { padding: 10px 12px; min-width: 0; }
+.wx-day-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+.wx-day-label { font-weight: 600; }
+.wx-day-icon { width: 28px; height: 28px; }
+.wx-day-condition { font-size: 13px; color: var(--muted); min-height: 2.4em; line-height: 1.2; margin-bottom: 4px; }
+.wx-day-temp { font-size: 19px; font-weight: 700; }
+.wx-day-rain { font-size: 12.5px; color: var(--muted); }
+.wx-icon { object-fit: contain; display: block; }
+[data-theme="light"] .wx-icon { filter: brightness(0) saturate(100%) invert(30%) sepia(18%) saturate(900%) hue-rotate(185deg); }
+
+/* QR-Code */
+.qr-btn {
+  width: 56px; height: 56px; padding: 4px; border-radius: 0.7rem; border: 0; cursor: pointer;
+  background: #fff; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); flex: none;
+}
+.qr-btn img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+.qr-btn:hover { transform: scale(1.05); }
+.qr-dialog form { align-items: center; text-align: center; }
+.qr-big { width: min(300px, 70vw); background: #fff; padding: 10px; border-radius: 1rem; image-rendering: pixelated; }
+.qr-url { font-weight: 600; font-size: 16px; }
 
 .footer { display: none; }
 
@@ -182,7 +224,8 @@ body.view-mobile .topright { grid-row: 1; grid-column: 2; }
 body.view-mobile .date .long, body.view-full .date .short { display: none; }
 body.view-mobile #btnView .txt { display: none; }
 body.view-mobile .topright { gap: 8px; }
-body.view-mobile .topright .bmc { display: none; }
+body.view-mobile .topright .bmc, body.view-mobile .qr-btn { display: none; }
+body.view-mobile .weather { width: 100%; text-align: left; margin-top: 16px; }
 body.view-mobile .clock { font-size: 20px; }
 body.view-mobile #btnView { padding: 6px 9px; }
 body.view-mobile .icon-btn:not(.round) { width: 36px; height: 36px; }
@@ -199,9 +242,6 @@ body.view-mobile .track-title { font-size: 24px; }
 body.view-mobile .track-artist { font-size: 17px; }
 body.view-mobile .controls { justify-content: center; margin-top: 14px; }
 body.view-mobile .volume { margin: 12px auto 0; width: 100%; }
-body.view-mobile .weather { padding: 12px 14px; gap: 10px; justify-content: space-between; }
-body.view-mobile .weather .now { width: 100%; border-right: 0; padding-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-body.view-mobile .weather .day { min-width: 0; flex: 1; }
 body.view-mobile .browser {
   order: 2; position: static; height: auto; overflow: visible;
   border-right: 0; border-top: 1px solid var(--border); padding: 14px;

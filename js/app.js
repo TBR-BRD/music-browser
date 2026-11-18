@@ -46,6 +46,11 @@ function applyView() {
   const mobile = state.viewMode === "mobile" || (state.viewMode === "auto" && mobileQuery.matches);
   document.body.classList.toggle("view-mobile", mobile);
   document.body.classList.toggle("view-full", !mobile);
+  // Vollansicht: Anbieter links über den Sendern – Mobil: als Leiste in der Kopfzeile
+  const browser = document.querySelector(".browser");
+  const brand = document.querySelector(".topbar .brand");
+  if (mobile && el.providers.parentElement !== brand.parentElement) brand.after(el.providers);
+  if (!mobile && el.providers.parentElement !== browser) browser.prepend(el.providers);
   const [icon, text] = VIEW_LABELS[state.viewMode];
   el.view.innerHTML = `${icon}<span class="txt"> ${text}</span>`;
   el.view.title = state.viewMode === "auto"
@@ -338,6 +343,21 @@ el.fav.addEventListener("click", toggleFavorite);
 el.volume.addEventListener("input", () => setVolume(el.volume.value / 100));
 el.view.addEventListener("click", cycleView);
 $("btnSettings").addEventListener("click", openSettings);
+$("btnQr").addEventListener("click", () => $("qrDialog").showModal());
+$("btnCopyLink").addEventListener("click", async (e) => {
+  const url = "https://tbr-brd.github.io/music-browser/";
+  try {
+    await navigator.clipboard.writeText(url);
+    e.target.textContent = "✓ Kopiert";
+  } catch {
+    e.target.textContent = url;
+  }
+  setTimeout(() => { e.target.textContent = "Link kopieren"; }, 2500);
+});
+// Höhe der Kopfzeile für die mitlaufende Senderliste
+new ResizeObserver(([entry]) => {
+  document.documentElement.style.setProperty("--topbar-h", `${Math.ceil(entry.target.offsetHeight)}px`);
+}).observe(document.querySelector(".topbar"));
 mobileQuery.addEventListener("change", applyView);
 
 el.audio.addEventListener("error", () => {
