@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Dein Music Browser</title>
-  <meta name="description" content="Radio im Browser – rund 290 Sender mit Cover, Datum, Uhrzeit und Wetter. Ausgabe im Browser oder per Chromecast.">
+  <meta name="description" content="Radio im Browser – rund 290 Sender mit Cover, Datum, Uhrzeit und Wetter. Ausgabe im Browser oder per AirPlay und Chromecast auf Lautsprecher.">
   <meta name="theme-color" content="#080b14">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="manifest" href="manifest.webmanifest">
@@ -74,9 +74,7 @@
             <button id="btnPlay" class="play-btn" title="Abspielen" aria-label="Abspielen">▶</button>
             <button id="btnNext" class="icon-btn round" title="Nächster Sender" aria-label="Nächster Sender">⏭</button>
             <button id="btnFav" class="icon-btn round" title="Favorit" aria-label="Favorit">☆</button>
-            <div class="cast-wrap" title="Auf Chromecast / Google-Cast-Lautsprecher streamen">
-              <google-cast-launcher id="castButton"></google-cast-launcher>
-            </div>
+            <button id="btnSpeakers" class="speaker-btn" title="Auf Lautsprecher streamen (AirPlay, Chromecast)">🔊 <span>Lautsprecher</span></button>
           </div>
 
           <label class="volume">
@@ -108,6 +106,14 @@
         <button type="button" id="btnCopyLink" class="secondary">Link kopieren</button>
         <button value="close">Schließen</button>
       </div>
+    </form>
+  </dialog>
+
+  <dialog id="speakerHelp" class="settings">
+    <form method="dialog">
+      <h2>🔊 Auf Lautsprecher streamen</h2>
+      <div id="speakerHelpBody" class="speaker-help"></div>
+      <div class="dialog-actions"><button value="close">OK</button></div>
     </form>
   </dialog>
 

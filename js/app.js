@@ -3,9 +3,10 @@ import { loadStations, groupsOf } from "./stations.js";
 import { fetchNowPlaying, resolveAudioUrl, hasLiveMetadata, fetchStationLogo } from "./metadata.js";
 import { findCover, stationPlaceholder, colorFor, initials } from "./cover.js";
 import { fetchWeather, renderWeather } from "./weather.js";
-import { initCast, isCasting, castStream, castSetVolume, castStop } from "./cast.js";
+import { initCast, isCasting, castStream, castSetVolume, castStop, castDeviceName } from "./cast.js";
 import { GROUP_LABELS, GROUP_ORDER_LAST } from "./config.js";
 import { initInstall } from "./install.js";
+import { initSpeakers } from "./speakers.js";
 
 const $ = (id) => document.getElementById(id);
 const el = {
@@ -240,7 +241,7 @@ async function play(station) {
     if (isCasting()) {
       el.audio.pause();
       await castStream({ url, station: station.name, ...(state.nowPlaying || {}) });
-      setStatus("Läuft auf Chromecast");
+      setStatus(`Läuft auf ${castDeviceName() || "Chromecast"}`);
     } else {
       el.audio.src = url;
       el.audio.volume = el.volume.value / 100;
@@ -435,7 +436,20 @@ async function init() {
   el.volume.value = Math.round(volume * 100);
   el.audio.volume = volume;
 
+  initSpeakers(el.audio, {
+    // AirPlay/Android brauchen einen laufenden Stream, den sie übernehmen können
+    ensurePlaying: async () => {
+      if (!state.playing) {
+        const station = state.current || visibleStations()[0] || state.stations[0];
+        if (station) await play(station);
+      }
+    },
+    onInfo: (html) => { $("speakerHelpBody").innerHTML = html; $("speakerHelp").showModal(); },
+    onState: (text) => setStatus(text),
+  });
+
   initCast(({ connected, name }) => {
+    document.getElementById("btnSpeakers")?.classList.toggle("active", connected);
     setStatus(connected ? `Verbunden mit ${name}` : "");
     if (connected && state.playing && state.current) play(state.current);
     else if (!connected && state.playing) stop();

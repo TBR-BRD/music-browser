@@ -37,6 +37,18 @@ function session() {
   return cast.framework.CastContext.getInstance().getCurrentSession();
 }
 
+/** Ist Google Cast nutzbar und mindestens ein Gerät im Netz? */
+export function castAvailable() {
+  if (!ready) return false;
+  const state = cast.framework.CastContext.getInstance().getCastState();
+  return state !== cast.framework.CastState.NO_DEVICES_AVAILABLE;
+}
+
+/** Öffnet den Cast-Gerätedialog von Chrome. */
+export function requestCastSession() {
+  return cast.framework.CastContext.getInstance().requestSession();
+}
+
 export function isCasting() {
   return Boolean(session());
 }
@@ -69,4 +81,8 @@ export function castSetVolume(level) {
 export function castStop() {
   const media = session()?.getMediaSession();
   if (media) media.stop(new chrome.cast.media.StopRequest(), () => {}, () => {});
+}
+
+export function castDeviceName() {
+  return session()?.getCastDevice()?.friendlyName || "";
 }

@@ -2,7 +2,7 @@
 
 🇩🇪 Deutsch · [🇬🇧 English](README_EN.md)
 
-Radio direkt im Browser: **rund 290 Sender** von 9 Anbietern, mit großem Albumcover, aktuellem Titel, Datum, Uhrzeit und Wetter. Abspielen kannst du im Browserfenster oder per **Chromecast / Google Cast**.
+Radio direkt im Browser: **rund 290 Sender** von 9 Anbietern, mit großem Albumcover, aktuellem Titel, Datum, Uhrzeit und Wetter. Abspielen kannst du im Browserfenster oder per **AirPlay und Chromecast** auf Lautsprechern.
 
 Die Webseite ist rein statisch und läuft auf **GitHub Pages**, ohne eigenen Server und weltweit erreichbar.
 
@@ -26,7 +26,7 @@ Die Webseite ist rein statisch und läuft auf **GitHub Pages**, ohne eigenen Ser
 - **Als App speichern:** Wer die Seite über den QR-Code oder zum ersten Mal auf dem Handy öffnet, bekommt das Speichern auf dem Startbildschirm angeboten. Unter Android/Chrome genügt ein Tipp auf „Speichern“, auf iPhone/iPad erklärt der Hinweis den Weg über „Teilen → Zum Home-Bildschirm“. „Später“ blendet ihn für 30 Tage aus. Die Seite läuft dann wie eine App im Vollbild.
 - **Zwei Ansichten:** Voll (Desktop/TV) und Mobil. Sie schalten sich automatisch nach Bildschirmbreite um. Der Button 🔄/🖥️/📱 schaltet zwischen Auto, Voll und Mobil.
 - **Einstellungen:** Ort für das Wetter und Dunkel-/Hell-Modus
-- **Chromecast / Google Cast** in Chrome und Edge
+- **🔊 Lautsprecher-Button:** streamt auf Lautsprecher – per **AirPlay** auf iPhone, iPad und Mac (HomePod, Apple TV, AirPlay-2-Lautsprecher wie neuere Sonos), per **Chromecast/Google Cast** in Chrome und Edge am Computer und per Cast in Chrome auf Android. Bluetooth-Lautsprecher verbindet man im System, der Ton folgt automatisch.
 - Medientasten und Sperrbildschirm-Anzeige (Media Session API), Leertaste für Play/Stopp
 
 ## Senderliste
@@ -77,6 +77,7 @@ js/cover.js         Cover-Suche (iTunes) und Platzhalter
 js/weather.js       Wetter (Open-Meteo)
 assets/             Icon, QR-Code, Wettersymbole (aus onradio-cover-bridge)
 js/cast.js          Google Cast
+js/speakers.js      Lautsprecher-Button (AirPlay, Cast, Remote Playback)
 js/storage.js       Einstellungen und Favoriten (localStorage)
 js/install.js       Angebot „Als App speichern“
 manifest.webmanifest, sw.js   Installierbare Web-App (PWA)
