@@ -1,8 +1,15 @@
 // "Was läuft gerade?" – Portierung von NowPlayingRepository.kt / common.js
-// für den Browser. Die Modi stammen aus stations.json:
-//   80s80s_api   -> direkt (die API erlaubt CORS)
-//   0nradio_json -> nur über den Proxy (kein CORS)
-//   icy_stream   -> nur über den Proxy (Browser können ICY nicht lesen)
+// für den Browser. Direkt im Browser (Anbieter erlauben CORS):
+//   80s80s   -> 80s80s-API (mit Cover)
+//   FFH      -> ffh.de "getallsonginfo" (alle FFH-Kanäle in einer Anfrage)
+//   ENERGY   -> api.nrjnet.de (mit Cover)
+// Nur mit optionalem Helfer (METADATA_PROXY in config.js):
+//   0nradio_json, icy_stream (RADIO BOB!, Sunshine Live, ANTENNE BAYERN …)
+import { METADATA_PROXY, DIRECT_AUDIO } from "./config.js";
+
+const FFH_URL =
+  "https://www.ffh.de/update-onair-info?tx_ffhonair_pi2%5Baction%5D=getallsonginfo&tx_ffhonair_pi2%5Bcontroller%5D=Webradio&type=210";
+const ENERGY_CONFIG_URL = "https://api.nrjnet.de/webradio/nrj-energy-de/config.json";
 
 const ARTIST_KEYS = ["artist", "artist_name", "artistName", "interpret"];
 const TITLE_KEYS = ["title", "song_title", "songTitle", "track"];
@@ -104,6 +111,66 @@ async function fetch80s80s(station) {
   return { artist, title, coverUrl };
 }
 
+// ---------- HIT RADIO FFH ----------
+let ffhCache = { at: 0, data: null };
+
+function ffhKeys(station) {
+  // http://mp3.ffh.de/ffhchannels/hq80er.mp3 -> ffh80er / ffhplus80er / ffh80erlive
+  const m = station.audioUrl.match(/mp3\.ffh\.de\/([^/]+)\/hq([a-z0-9]+)\.mp3/i);
+  if (!m) return [];
+  const [, folder, name] = m;
+  if (folder === "radioffh") return ["ffh"];
+  if (folder === "ffhplus") return [`ffhplus${name}`, `ffh${name}`];
+  return [`ffh${name}`, `ffhplus${name}`, `ffh${name}live`];
+}
+
+async function fetchFfh(station) {
+  const now = Date.now();
+  if (!ffhCache.data || now - ffhCache.at > 10000) {
+    ffhCache = { at: now, data: await fetchJson(FFH_URL) };
+  }
+  const all = Object.assign({}, ...(ffhCache.data || []));
+  const entry = ffhKeys(station).map((k) => all[k]).find(Boolean);
+  if (!entry || entry.isStatic) return null;
+  const artist = fixEncoding(entry.artist);
+  const title = fixEncoding(entry.title);
+  return artist && title ? { artist, title, coverUrl: null } : null;
+}
+
+// ---------- ENERGY ----------
+let energyChannels = null;
+
+async function energyCurrentUrl(station) {
+  if (!energyChannels) {
+    const config = await fetchJson(ENERGY_CONFIG_URL);
+    energyChannels = new Map();
+    for (const ch of Object.values(config.channels || {})) {
+      if (ch.streamonkeyMountName && ch.currentUrl) energyChannels.set(ch.streamonkeyMountName, ch.currentUrl);
+    }
+  }
+  const mount = station.audioUrl.match(/streamonkey\.net\/([^?/]+)/)?.[1];
+  return mount ? energyChannels.get(mount) : null;
+}
+
+async function fetchEnergy(station) {
+  const url = await energyCurrentUrl(station);
+  if (!url) return null;
+  const data = await fetchJson(url);
+  const artist = fixEncoding(data.artist);
+  const title = fixEncoding(data.title);
+  if (!artist || !title) return null;
+  const images = data.images || {};
+  const coverUrl = data.hasCover ? images["600x600"] || images["200x200"] || null : null;
+  return { artist: titleCase(artist), title: titleCase(title), coverUrl };
+}
+
+/** ENERGY liefert oft GROSSBUCHSTABEN – lesbarer machen. */
+function titleCase(text) {
+  if (text !== text.toUpperCase()) return text;
+  return text.toLowerCase().replace(/(^|[\s(\-/&.])(\p{L})/gu, (m, sep, ch) => sep + ch.toUpperCase());
+}
+
+// ---------- ON Radio / ICY (nur mit Helfer) ----------
 async function fetchOnRadio(station, proxyUrl) {
   if (!proxyUrl) return null;
   const payload = await fetchJson(proxied(proxyUrl, "raw", station.metadataUrl));
@@ -132,8 +199,11 @@ async function fetchIcy(station, proxyUrl) {
  * Liefert {artist, title, coverUrl} oder null, wenn für diesen Sender
  * (gerade) keine Titelinfo verfügbar ist.
  */
-export async function fetchNowPlaying(station, { proxyUrl }) {
+export async function fetchNowPlaying(station) {
+  const proxyUrl = METADATA_PROXY;
   try {
+    if (station.group === "HIT RADIO FFH") return await fetchFfh(station);
+    if (station.group === "ENERGY") return await fetchEnergy(station);
     switch (station.metadataMode) {
       case "80s80s_api": return await fetch80s80s(station);
       case "0nradio_json": return await fetchOnRadio(station, proxyUrl);
@@ -146,8 +216,11 @@ export async function fetchNowPlaying(station, { proxyUrl }) {
   }
 }
 
-export function metadataNeedsProxy(station) {
-  return station.metadataMode === "0nradio_json" || station.metadataMode === "icy_stream";
+/** Liefert dieser Sender im Browser Titel und Cover? */
+export function hasLiveMetadata(station) {
+  if (["HIT RADIO FFH", "ENERGY"].includes(station.group)) return true;
+  if (station.metadataMode === "80s80s_api") return true;
+  return Boolean(METADATA_PROXY);
 }
 
 // ---------- Audio-URL auflösen (m3u / pls) ----------
@@ -176,7 +249,9 @@ async function fetchText(url) {
   }
 }
 
-export async function resolveAudioUrl(station, { proxyUrl }) {
+export async function resolveAudioUrl(station) {
+  const proxyUrl = METADATA_PROXY;
+  if (DIRECT_AUDIO[station.id]) return DIRECT_AUDIO[station.id];
   if (station.audioMode !== "m3u" && station.audioMode !== "pls") return station.audioUrl;
   if (resolvedCache.has(station.id)) return resolvedCache.get(station.id);
 
@@ -193,7 +268,5 @@ export async function resolveAudioUrl(station, { proxyUrl }) {
       /* nächster Versuch */
     }
   }
-  throw new Error(proxyUrl
-    ? "Playlist konnte nicht gelesen werden."
-    : "Dieser Sender liefert eine Playlist (m3u) – dafür wird der Proxy benötigt.");
+  throw new Error("Dieser Sender liefert nur eine Playlist (m3u), die der Browser nicht lesen darf.");
 }

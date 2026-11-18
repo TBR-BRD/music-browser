@@ -28,6 +28,6 @@ export function groupsOf(stations) {
 }
 
 /** Braucht der Sender den Proxy, um überhaupt abspielbar zu sein? */
-export function needsProxyForAudio(station) {
+export function needsProxyForAudio(station) { // nicht mehr genutzt (direkte Adressen in config.js)
   return station.audioMode === "m3u" || station.audioMode === "pls";
 }

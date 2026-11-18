@@ -1,57 +1,72 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="dark">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>music-browser</title>
-  <meta name="description" content="Radio und Musik im Browser – mit Cover, Wetter und Ausgabe auf Chromecast oder Home-Assistant-Lautsprecher.">
-  <meta name="theme-color" content="#0f1115">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dein Music Browser</title>
+  <meta name="description" content="Radio im Browser – rund 290 Sender mit Cover, Datum, Uhrzeit und Wetter. Ausgabe im Browser oder per Chromecast.">
+  <meta name="theme-color" content="#080b14">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/style.css">
+  <script>
+    // Theme und Ansicht vor dem ersten Rendern setzen (kein Aufblitzen)
+    try {
+      const s = JSON.parse(localStorage.getItem("music-browser:settings") || "{}");
+      document.documentElement.dataset.theme = s.theme === "light" ? "light" : "dark";
+    } catch {}
+  </script>
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <img src="assets/icon.svg" alt="" width="28" height="28">
-      <span>music-browser</span>
+      <img src="assets/icon.svg" alt="" width="30" height="30">
+      <span>Dein Music Browser</span>
     </div>
-    <nav class="sources" aria-label="Quelle">
-      <button class="source active" data-source="radio">📻 Radio</button>
-      <button class="source" data-source="spotify">Spotify</button>
-      <button class="source" data-source="apple">Apple Music</button>
-    </nav>
+
+    <nav id="providers" class="providers" aria-label="Anbieter"></nav>
+
     <div class="topright">
-      <div id="clock" class="clock">--:--</div>
+      <div class="datetime" aria-live="off">
+        <div id="clock" class="clock">--:--</div>
+        <div id="date" class="date"></div>
+      </div>
+      <button id="btnView" class="pill-btn" title="Ansicht umschalten">🖥️ Auto</button>
       <button id="btnSettings" class="icon-btn" title="Einstellungen" aria-label="Einstellungen">⚙️</button>
+      <a class="bmc" href="https://www.buymeacoffee.com/thoralf.brandt" target="_blank" rel="noopener" title="Buy me a coffee">
+        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="36">
+      </a>
     </div>
   </header>
 
   <main class="layout">
     <aside class="browser" aria-label="Senderliste">
-      <input id="search" class="search" type="search" placeholder="Sender suchen …" autocomplete="off">
-      <div id="groups" class="groups" role="tablist"></div>
+      <div class="browser-head">
+        <h2 id="providerTitle" class="provider-title">Sender</h2>
+        <input id="search" class="search" type="search" placeholder="Alle Sender durchsuchen …" autocomplete="off">
+      </div>
       <ul id="stationList" class="station-list"></ul>
       <p id="stationInfo" class="muted small"></p>
     </aside>
 
     <section class="stage" aria-label="Wiedergabe">
-      <div id="comingSoon" class="coming-soon" hidden></div>
-
-      <div id="nowPlaying" class="now-playing">
+      <div class="now-playing">
         <div class="cover-wrap">
           <img id="cover" class="cover" src="assets/no-cover.svg" alt="Cover">
         </div>
         <div class="meta">
           <div id="stationName" class="station-name">Sender wählen</div>
-          <h1 id="trackTitle" class="track-title">music-browser</h1>
+          <h1 id="trackTitle" class="track-title">Dein Music Browser</h1>
           <div id="trackArtist" class="track-artist">Radio · Cover · Wetter</div>
           <div id="status" class="status muted small"></div>
 
           <div class="controls">
-            <button id="btnPrev" class="icon-btn big" title="Vorheriger Sender" aria-label="Vorheriger Sender">⏮</button>
+            <button id="btnPrev" class="icon-btn round" title="Vorheriger Sender" aria-label="Vorheriger Sender">⏮</button>
             <button id="btnPlay" class="play-btn" title="Abspielen" aria-label="Abspielen">▶</button>
-            <button id="btnNext" class="icon-btn big" title="Nächster Sender" aria-label="Nächster Sender">⏭</button>
-            <button id="btnFav" class="icon-btn big" title="Favorit" aria-label="Favorit">☆</button>
+            <button id="btnNext" class="icon-btn round" title="Nächster Sender" aria-label="Nächster Sender">⏭</button>
+            <button id="btnFav" class="icon-btn round" title="Favorit" aria-label="Favorit">☆</button>
+            <div class="cast-wrap" title="Auf Chromecast / Google-Cast-Lautsprecher streamen">
+              <google-cast-launcher id="castButton"></google-cast-launcher>
+            </div>
           </div>
 
           <label class="volume">
@@ -59,16 +74,6 @@
             <input id="volume" type="range" min="0" max="100" value="70" aria-label="Lautstärke">
             <span aria-hidden="true">🔊</span>
           </label>
-
-          <div class="output">
-            <label for="output" class="muted small">Ausgabe</label>
-            <select id="output">
-              <option value="browser">🔊 Dieser Browser</option>
-            </select>
-            <div class="cast-wrap" title="Auf Chromecast / Google-Cast-Lautsprecher streamen">
-              <google-cast-launcher id="castButton"></google-cast-launcher>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -76,33 +81,27 @@
     </section>
   </main>
 
+  <footer class="footer">
+    <a class="bmc" href="https://www.buymeacoffee.com/thoralf.brandt" target="_blank" rel="noopener">
+      <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40">
+    </a>
+    <span class="muted small">Senderliste: <a href="https://github.com/TBR-BRD/radiostations" target="_blank" rel="noopener">TBR-BRD/radiostations</a> · <a href="https://github.com/TBR-BRD/music-browser" target="_blank" rel="noopener">Quellcode</a></span>
+  </footer>
+
   <dialog id="settings" class="settings">
     <form method="dialog" id="settingsForm">
       <h2>Einstellungen</h2>
-
-      <fieldset>
-        <legend>Wetter</legend>
-        <label>Ort <input name="weatherLocation" placeholder="Falkensee"></label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Metadaten-Proxy (optional)</legend>
-        <p class="muted small">Für Titel/Cover bei ICY-Streams und ON Radio sowie für m3u-Sender. URL deines Cloudflare-Workers, siehe README.</p>
-        <label>Proxy-URL <input name="proxyUrl" placeholder="https://music-proxy.DEINNAME.workers.dev"></label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Home Assistant (optional)</legend>
-        <p class="muted small">Spielt Sender auf deinen Home-Assistant-Lautsprechern (Sonos, Denon, Echo …). Home Assistant muss per https erreichbar sein und diese Seite in <code>cors_allowed_origins</code> erlauben. Der Token bleibt nur in diesem Browser gespeichert.</p>
-        <label>URL <input name="haUrl" placeholder="https://xxxx.ui.nabu.casa"></label>
-        <label>Long-Lived Access Token <input name="haToken" type="password" autocomplete="off"></label>
-        <button type="button" id="btnHaTest" class="secondary">Verbindung testen</button>
-        <span id="haTestResult" class="small"></span>
-      </fieldset>
-
+      <label>Ort für das Wetter
+        <input name="weatherLocation" placeholder="Falkensee" autocomplete="address-level2">
+      </label>
+      <label class="switch-row">
+        <span>Dunkler Modus</span>
+        <input name="darkMode" type="checkbox" role="switch">
+      </label>
+      <p class="muted small">Favoriten und Einstellungen werden nur in diesem Browser gespeichert.</p>
       <div class="dialog-actions">
         <button value="cancel" class="secondary">Abbrechen</button>
-        <button value="save" id="btnSave">Speichern</button>
+        <button value="save">Speichern</button>
       </div>
     </form>
   </dialog>

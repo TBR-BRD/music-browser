@@ -20,13 +20,15 @@ export function save(key, value) {
 
 export const DEFAULT_SETTINGS = {
   weatherLocation: "Falkensee",
-  proxyUrl: "",
-  haUrl: "",
-  haToken: "",
+  theme: "dark", // "dark" | "light"
 };
 
 export function loadSettings() {
-  return { ...DEFAULT_SETTINGS, ...load("settings", {}) };
+  const stored = load("settings", {});
+  return {
+    weatherLocation: stored.weatherLocation || DEFAULT_SETTINGS.weatherLocation,
+    theme: stored.theme === "light" ? "light" : "dark",
+  };
 }
 
 export function saveSettings(settings) {
