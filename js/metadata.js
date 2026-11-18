@@ -1,10 +1,10 @@
 // "Was läuft gerade?" – Portierung von NowPlayingRepository.kt / common.js
 // für den Browser. Direkt im Browser (Anbieter erlauben CORS):
-//   80s80s   -> 80s80s-API (mit Cover)
+//   80s80s, RADIO BOB!, Sunshine Live -> Regiocast-API (mit Cover und Senderlogo)
 //   FFH      -> ffh.de "getallsonginfo" (alle FFH-Kanäle in einer Anfrage)
 //   ENERGY   -> api.nrjnet.de (mit Cover)
 // Nur mit optionalem Helfer (METADATA_PROXY in config.js):
-//   0nradio_json, icy_stream (RADIO BOB!, Sunshine Live, ANTENNE BAYERN …)
+//   0nradio_json, icy_stream (ON Radio, Absolut, ANTENNE BAYERN, Eigene …)
 import { METADATA_PROXY, DIRECT_AUDIO } from "./config.js";
 
 const FFH_URL =
@@ -19,7 +19,6 @@ const COVER_KEYS_80S = [
   "cover_art_url_m", "cover_art_url_s", "cover_art_url_xs",
 ];
 
-let api80sCache = { at: 0, url: "", data: null };
 
 export function proxied(proxyUrl, endpoint, targetUrl) {
   const base = proxyUrl.replace(/\/+$/, "");
@@ -90,14 +89,54 @@ async function fetchJson(url, timeoutMs = 8000) {
   }
 }
 
-async function fetch80s80s(station) {
-  const now = Date.now();
-  if (!api80sCache.data || api80sCache.url !== station.metadataUrl || now - api80sCache.at > 10000) {
-    api80sCache = { at: now, url: station.metadataUrl, data: await fetchJson(station.metadataUrl) };
+// ---------- Regiocast-Sender: 80s80s, RADIO BOB!, Sunshine Live ----------
+// Alle drei laufen auf derselben Plattform mit identischer, CORS-freundlicher
+// Schnittstelle (/streams/api): pro Kanal Titel, Interpret, Cover und Senderlogo.
+const REGIOCAST_APIS = {
+  "streams.80s80s.de": "https://www.80s80s.de/streams/api",
+  "streams.radiobob.de": "https://www.radiobob.de/streams/api",
+  "stream.sunshine-live.de": "https://www.sunshine-live.de/streams/api",
+};
+const regiocastCache = new Map(); // api -> { at, data }
+
+function regiocastApi(station) {
+  try {
+    return REGIOCAST_APIS[new URL(station.audioUrl).hostname] || null;
+  } catch {
+    return null;
   }
-  const match = Object.values(api80sCache.data || {}).find(
-    (entry) => entry && Number(entry.station_id) === Number(station.metadataStationId)
+}
+
+function streamMount(url) {
+  try {
+    return new URL(url, "https://x.invalid/").pathname.split("/").filter(Boolean)[0]?.toLowerCase() || "";
+  } catch {
+    return "";
+  }
+}
+
+async function regiocastEntry(station) {
+  const api = regiocastApi(station);
+  if (!api) return null;
+  const cached = regiocastCache.get(api);
+  let data = cached?.data;
+  if (!data || Date.now() - cached.at > 10000) {
+    data = await fetchJson(api);
+    regiocastCache.set(api, { at: Date.now(), data });
+  }
+  const entries = Object.values(data || {}).filter((e) => e && typeof e === "object");
+  const mount = streamMount(station.audioUrl);
+  return (
+    entries.find((e) => streamMount(e.url_high) === mount || streamMount(e.url_low) === mount) ||
+    (station.metadataStationId != null
+      ? entries.find((e) => Number(e.station_id) === Number(station.metadataStationId))
+      : null) ||
+    null
   );
+}
+
+async function fetchRegiocast(station) {
+  const match = await regiocastEntry(station);
   if (!match) return null;
   const artist = fixEncoding(firstText(match, ["artist_name", "artist", "artistName"]));
   const title = fixEncoding(firstText(match, ["song_title", "title", "songTitle"]));
@@ -109,6 +148,16 @@ async function fetch80s80s(station) {
     }
   }
   return { artist, title, coverUrl };
+}
+
+/** Senderlogo (falls der Anbieter eins liefert), z. B. für die Anzeige ohne Titel. */
+export async function fetchStationLogo(station) {
+  try {
+    const entry = await regiocastEntry(station);
+    return entry?.stream_logo || null;
+  } catch {
+    return null;
+  }
 }
 
 // ---------- HIT RADIO FFH ----------
@@ -204,8 +253,8 @@ export async function fetchNowPlaying(station) {
   try {
     if (station.group === "HIT RADIO FFH") return await fetchFfh(station);
     if (station.group === "ENERGY") return await fetchEnergy(station);
+    if (regiocastApi(station)) return await fetchRegiocast(station);
     switch (station.metadataMode) {
-      case "80s80s_api": return await fetch80s80s(station);
       case "0nradio_json": return await fetchOnRadio(station, proxyUrl);
       case "icy_stream": return await fetchIcy(station, proxyUrl);
       default: return null;
@@ -219,7 +268,7 @@ export async function fetchNowPlaying(station) {
 /** Liefert dieser Sender im Browser Titel und Cover? */
 export function hasLiveMetadata(station) {
   if (["HIT RADIO FFH", "ENERGY"].includes(station.group)) return true;
-  if (station.metadataMode === "80s80s_api") return true;
+  if (regiocastApi(station)) return true;
   return Boolean(METADATA_PROXY);
 }
 

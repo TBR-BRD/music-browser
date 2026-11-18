@@ -1,6 +1,6 @@
 import { load, save, loadSettings, saveSettings } from "./storage.js";
 import { loadStations, groupsOf } from "./stations.js";
-import { fetchNowPlaying, resolveAudioUrl, hasLiveMetadata } from "./metadata.js";
+import { fetchNowPlaying, resolveAudioUrl, hasLiveMetadata, fetchStationLogo } from "./metadata.js";
 import { findCover, stationPlaceholder, colorFor, initials } from "./cover.js";
 import { fetchWeather, renderWeather } from "./weather.js";
 import { initCast, isCasting, castStream, castSetVolume, castStop } from "./cast.js";
@@ -84,6 +84,13 @@ function setCover(src) {
     el.cover.classList.remove("loading");
   };
   img.src = src;
+}
+
+/** Senderlogo des Anbieters, sonst das erzeugte Sender-Bild. */
+async function showStationCover(station) {
+  setCover(stationPlaceholder(station));
+  const logo = await fetchStationLogo(station);
+  if (logo && state.current?.id === station.id && !state.nowPlaying?.coverUrl) setCover(logo);
 }
 
 function renderTrack() {
@@ -183,7 +190,7 @@ async function play(station) {
   const token = ++state.playToken;
   if (state.current?.id !== station.id) {
     state.nowPlaying = null;
-    setCover(stationPlaceholder(station));
+    showStationCover(station);
   }
   state.current = station;
   save("lastStation", station.id);
@@ -426,7 +433,7 @@ async function init() {
   const last = state.stations.find((s) => s.id === load("lastStation", null));
   if (last) {
     state.current = last;
-    setCover(stationPlaceholder(last));
+    showStationCover(last);
     renderTrack();
     startPolling(); // zeigt den aktuellen Titel schon vor dem Abspielen
   }

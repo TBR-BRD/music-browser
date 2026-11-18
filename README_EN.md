@@ -19,7 +19,7 @@ The site is purely static and runs on **GitHub Pages**: no server of your own, r
 - **Provider buttons** (in the full view on the left above the stations): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.
 - **Search** across all stations, including multiple words (e.g. "bob rock")
 - **Favorites** via ☆ on the playing station
-- **Large cover and current track** for 80s80s, HIT RADIO FFH and ENERGY, straight from their APIs, otherwise via the iTunes search
+- **Large cover and current track** for 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH and ENERGY, straight from their APIs, otherwise via the iTunes search. Without a current track, the provider's station logo is shown.
 - **Date and time** at the top right
 - **Weather** as in onradio-cover-bridge: current conditions with air pressure and trend (↑ → ↓), plus today and tomorrow with precipitation (Open-Meteo)
 - **QR code** at the top right for sharing the site with friends; click to enlarge
@@ -42,8 +42,8 @@ A web page may only read data from other servers if the provider allows it (CORS
 
 | Provider | Title and cover in the browser |
 |---|---|
-| 80s80s, HIT RADIO FFH, ENERGY | ✅ directly from their APIs |
-| ON Radio, RADIO BOB!, Sunshine Live, Absolut Radio, ANTENNE BAYERN, Eigene | ❌ station name only; the stream still plays |
+| 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH, ENERGY | ✅ directly from their APIs |
+| ON Radio, Absolut Radio, ANTENNE BAYERN, Eigene | ❌ station name only; the stream still plays |
 
 If you want titles there too, you can optionally run a small helper, e.g. the Cloudflare Worker in [`proxy/worker.js`](proxy/worker.js), and enter its address as `METADATA_PROXY` in `js/config.js`. It is not required.
 
@@ -68,7 +68,7 @@ css/style.css       Styling: dark/light, full and mobile views
 js/app.js           UI, playback, view switching, settings
 js/config.js        Group names, direct stream URLs, optional helper
 js/stations.js      Load station list (with offline copy)
-js/metadata.js      Title and artist (80s80s, FFH, ENERGY)
+js/metadata.js      Title, artist, cover (80s80s, BOB, Sunshine Live, FFH, ENERGY)
 js/cover.js         Cover search (iTunes) and placeholders
 js/weather.js       Weather (Open-Meteo)
 assets/             Icon, QR code, weather icons (from onradio-cover-bridge)
