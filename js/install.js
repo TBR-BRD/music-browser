@@ -28,8 +28,21 @@ function render(banner) {
     text.innerHTML = "Speichere <b>Dein Music Browser</b> auf dem Startbildschirm – dann ist dein Radio nur einen Tipp entfernt.";
     btn.hidden = false;
   } else if (isIos()) {
-    text.innerHTML = 'Auf dem Home-Bildschirm speichern: unten auf <b>Teilen</b> <span class="ios-share" aria-label="Teilen-Symbol">⬆︎</span> tippen und dann <b>„Zum Home-Bildschirm“</b> wählen.';
+    // Apple erlaubt Webseiten keinen Installations-Knopf – daher die Anleitung.
+    const chromeIos = /CriOS/i.test(navigator.userAgent);
+    text.innerHTML = chromeIos
+      ? `<ol class="install-steps">
+          <li>Oben rechts auf <b>Teilen</b> <span class="ios-share">⬆︎</span> tippen</li>
+          <li><b>„Zum Home-Bildschirm“</b> wählen</li>
+          <li>Oben rechts auf <b>„Hinzufügen“</b> tippen</li>
+        </ol>`
+      : `<ol class="install-steps">
+          <li>Unten auf <b>•••</b> tippen (bzw. direkt auf <b>Teilen</b> <span class="ios-share">⬆︎</span>)</li>
+          <li><b>Teilen</b> und dann <b>„Zum Home-Bildschirm“</b> wählen</li>
+          <li><b>„Hinzufügen“</b> tippen</li>
+        </ol>`;
     btn.hidden = true;
+    banner.classList.toggle("point-down", !chromeIos);
   } else {
     text.innerHTML = 'Auf dem Startbildschirm speichern: im Browser-Menü <b>⋮</b> auf <b>„Zum Startbildschirm hinzufügen“</b> bzw. <b>„App installieren“</b> tippen.';
     btn.hidden = true;
@@ -84,6 +97,8 @@ export function initInstall() {
     hide(banner, outcome !== "accepted");
   });
   banner.querySelector("#btnInstallLater").addEventListener("click", () => hide(banner, true));
+  // Auf iPhone/iPad gibt es keinen Installations-Knopf – dort heißt der Button „Verstanden“.
+  if (isIos()) banner.querySelector("#btnInstallLater").textContent = "Verstanden";
 
   if (isStandalone()) return; // läuft schon als App
   if (!(fromQr || isMobile())) return;
