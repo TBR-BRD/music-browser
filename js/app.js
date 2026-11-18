@@ -74,12 +74,20 @@ function applyTheme() {
 
 function setStatus(text) { el.status.textContent = text || ""; }
 
+let coverRequest = 0;
 function setCover(src) {
-  if (el.cover.getAttribute("src") === src) return;
+  // Nur die zuletzt angeforderte Grafik darf angezeigt werden (Ladezeiten sind unterschiedlich).
+  const request = ++coverRequest;
+  if (el.cover.getAttribute("src") === src) { el.cover.classList.remove("loading"); return; }
   el.cover.classList.add("loading");
   const img = new Image();
-  img.onload = () => { el.cover.src = src; el.cover.classList.remove("loading"); };
+  img.onload = () => {
+    if (request !== coverRequest) return;
+    el.cover.src = src;
+    el.cover.classList.remove("loading");
+  };
   img.onerror = () => {
+    if (request !== coverRequest) return;
     el.cover.src = stationPlaceholder(state.current || { name: "?" });
     el.cover.classList.remove("loading");
   };
