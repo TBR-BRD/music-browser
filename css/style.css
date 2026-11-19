@@ -146,7 +146,9 @@ h1, h2 { margin: 0; }
 .speaker-btn:hover { border-color: var(--accent); }
 .speaker-btn.active { background: linear-gradient(135deg, var(--accent), var(--accent-strong)); color: var(--on-accent); border-color: transparent; }
 .speaker-help ul { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 6px; }
-.speaker-help p { margin: 0 0 6px; }
+.speaker-help p { margin: 0 0 8px; }
+.speaker-help ol { margin: 0 0 10px; padding-left: 22px; display: grid; gap: 6px; }
+.cast-search { width: 100%; padding: 10px 14px !important; }
 
 /* Wetter – Aufbau wie onradio-cover-bridge */
 .weather {
