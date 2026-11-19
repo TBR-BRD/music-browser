@@ -173,11 +173,13 @@ function selectGroup(group) {
 
 function stopPolling() { clearInterval(state.pollTimer); state.pollTimer = null; }
 
-async function pollMetadata() {
+async function pollMetadata({ preview = false } = {}) {
   const station = state.current;
   if (!station || !hasLiveMetadata(station)) return;
   const np = await fetchNowPlaying(station);
   if (station !== state.current || !np) return;
+  // Nach „Stopp“ nichts mehr aktualisieren (außer der einmaligen Vorschau beim Start)
+  if (!state.playing && !preview && !state.pollTimer) return;
 
   if (np.stale) {
     // Anbieter liefert seit Minuten dieselben Daten – nichts Veraltetes anzeigen
@@ -199,6 +201,7 @@ async function pollMetadata() {
   const isShow = np.artist === station.name; // Sendung/Nachrichten statt Lied
   const coverUrl = np.coverUrl || (isShow ? null : await findCover(np.artist, np.title));
   if (station !== state.current || state.nowPlaying?.title !== np.title) return;
+  if (!state.playing && !preview && !state.pollTimer) return;
   state.nowPlaying.coverUrl = coverUrl;
   if (coverUrl) setCover(coverUrl);
   else showStationCover(station);
@@ -231,6 +234,7 @@ async function play(station) {
   } catch (error) {
     if (token !== state.playToken) return;
     state.playing = false;
+    stopPolling();
     renderPlayButton();
     setStatus(error.message);
     return;
@@ -252,6 +256,7 @@ async function play(station) {
   } catch (error) {
     if (token !== state.playToken) return;
     state.playing = false;
+    stopPolling();
     setStatus(
       error.name === "NotAllowedError" ? "Zum Abspielen bitte ▶ tippen."
       : error.name === "NotSupportedError" ? "Stream konnte nicht geladen werden (Sender offline oder Format nicht unterstützt)."
@@ -265,6 +270,7 @@ async function play(station) {
 function stop() {
   state.playToken++;
   state.playing = false;
+  stopPolling(); // Titel und Cover bleiben stehen, bis wieder abgespielt wird
   el.audio.pause();
   el.audio.removeAttribute("src");
   el.audio.load(); // Live-Stream wirklich trennen
@@ -477,7 +483,7 @@ async function init() {
     state.current = last;
     showStationCover(last);
     renderTrack();
-    startPolling(); // zeigt den aktuellen Titel schon vor dem Abspielen
+    pollMetadata({ preview: true }); // einmalig: aktuellen Titel schon vor dem Abspielen zeigen
   }
   renderProviders();
   renderList();
