@@ -56,7 +56,7 @@
         <input id="search" class="search" type="search" placeholder="Alle Sender durchsuchen …" autocomplete="off">
       </div>
       <ul id="stationList" class="station-list"></ul>
-      <p id="stationInfo" class="muted small"></p>
+      <p class="muted small sidebar-foot"><span id="stationInfo"></span><span class="sep"> · </span><a href="https://github.com/TBR-BRD/music-browser" target="_blank" rel="noopener">Quellcode</a></p>
     </aside>
 
     <section class="stage" aria-label="Wiedergabe">
@@ -65,6 +65,7 @@
           <img id="cover" class="cover" src="assets/no-cover.svg" alt="Cover">
         </div>
         <div class="meta">
+          <div class="np-card">
           <div id="stationName" class="station-name">Sender wählen</div>
           <h1 id="trackTitle" class="track-title">Dein Music Browser</h1>
           <div id="trackArtist" class="track-artist">Radio · Cover · Wetter</div>
@@ -83,6 +84,7 @@
             <input id="volume" type="range" min="0" max="100" value="70" aria-label="Lautstärke">
             <span aria-hidden="true">🔊</span>
           </label>
+          </div>
 
           <section id="weather" class="weather" aria-label="Wetter"></section>
         </div>

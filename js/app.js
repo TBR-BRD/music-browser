@@ -140,7 +140,7 @@ function visibleStations() {
 function renderProviders() {
   const buttons = [...state.groups, FAVS];
   el.providers.innerHTML = buttons.map((g) =>
-    `<button class="provider${g === state.group && !state.query ? " active" : ""}" data-group="${g}">${label(g)}</button>`
+    `<button class="provider${g === state.group && !state.query ? " active" : ""}${label(g).length > 12 ? " wide" : ""}" data-group="${g}" title="${label(g)}">${label(g)}</button>`
   ).join("");
 }
 
