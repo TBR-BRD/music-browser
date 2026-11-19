@@ -14,6 +14,14 @@ Die Webseite ist rein statisch und läuft auf **GitHub Pages**, ohne eigenen Ser
 </a>
 <br>
 
+## Screenshots
+
+Auf dem iPad (Chrome, Vollansicht):
+
+![Dein Music Browser auf dem iPad – Wiedergabe mit Cover, Steuerung und Wetter](docs/screenshots/ipad-player.png)
+
+![Dein Music Browser auf dem iPad – Hilfe mit aufklappbaren Abschnitten](docs/screenshots/ipad-hilfe.png)
+
 ## Funktionen
 
 - **Anbieter-Buttons** (in der Vollansicht links über den Sendern): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Eigene und ★ Favoriten. Darunter stehen nur die Sender des gewählten Anbieters.
@@ -78,6 +86,7 @@ js/metadata.js      Titel, Interpret, Cover (80s80s, BOB, Sunshine Live, FFH, EN
 js/cover.js         Cover-Suche (iTunes) und Platzhalter
 js/weather.js       Wetter (Open-Meteo)
 assets/             Icon, QR-Code, Wettersymbole (aus onradio-cover-bridge)
+docs/screenshots/   Screenshots für die README
 js/cast.js          Google Cast
 js/speakers.js      Lautsprecher-Button (AirPlay, Cast, Remote Playback)
 js/storage.js       Einstellungen und Favoriten (localStorage)
