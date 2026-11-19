@@ -263,8 +263,8 @@ function cleanArtists(text) {
 async function fetchStreamAbc(station) {
   const key = STREAMABC_CHANNELS[station.id];
   const data = await fetchJson(`https://api.streamabc.net/metadata/channel/${key}.json?_=${Date.now()}`);
-  const artist = cleanArtists(fixEncoding(data?.artist));
-  const title = fixEncoding(data?.song || data?.title);
+  const artist = titleCase(cleanArtists(fixEncoding(data?.artist)));
+  const title = titleCase(fixEncoding(data?.song || data?.title));
   if (!artist || !title) return null;
   // Cover-URL enthält ein Senderlogo als Ersatz („default=…“), falls es kein Albumcover gibt
   const coverUrl = data?.images?.large?.url || data?.cover || null;
