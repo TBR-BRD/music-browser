@@ -31,27 +31,26 @@ export function initSpeakers(audio, { ensurePlaying, onInfo, onState }) {
     audio.remote.ondisconnect = () => { button.classList.remove("active"); onState(""); };
   }
 
-  button.addEventListener("click", async () => {
-    // 1. Browser mit eingebauter AirPlay-Auswahl (Safari, iPhone/iPad): direkt öffnen
-    if (typeof audio.webkitShowPlaybackTargetPicker === "function") {
-      try {
-        await ensurePlaying();
-        audio.webkitShowPlaybackTargetPicker();
-      } catch (error) {
-        console.info("[speakers]", error);
-        openChooser();
-      }
-      return;
-    }
-    // 2. sonst eigene Auswahl: Chromecast + Anleitung für AirPlay/Bluetooth
-    openChooser();
-  });
+  // Immer zuerst die eigene Auswahl: ältere AirPlay-1-Receiver (z. B. Denon AVR-X2000)
+  // tauchen in der Safari-Liste zwar auf, lassen sich von dort aber nicht verbinden –
+  // über das Kontrollzentrum (Systemton) klappt es dagegen.
+  button.addEventListener("click", () => openChooser());
 
   function openChooser() {
     const dialog = document.getElementById("speakerHelp");
     const body = document.getElementById("speakerHelpBody");
     const canCast = castAvailable() || hasRemotePlayback(audio);
-    body.innerHTML = chooserHtml(canCast);
+    const canAirPlay = typeof audio.webkitShowPlaybackTargetPicker === "function";
+    body.innerHTML = chooserHtml(canCast, canAirPlay);
+    body.querySelector("#btnAirPlay")?.addEventListener("click", async () => {
+      dialog.close();
+      try {
+        await ensurePlaying();
+        audio.webkitShowPlaybackTargetPicker();
+      } catch (error) {
+        console.info("[speakers]", error);
+      }
+    });
     body.querySelector("#btnCastSearch")?.addEventListener("click", async () => {
       dialog.close();
       try {
@@ -63,7 +62,7 @@ export function initSpeakers(audio, { ensurePlaying, onInfo, onState }) {
         }
       } catch (error) {
         console.info("[speakers]", error?.name, error?.message || error);
-        onInfo(`<p><b>Kein Chromecast gefunden.</b> Gerät und Computer/Handy müssen im selben WLAN sein.</p>${airplayHelp()}`);
+        onInfo(`<p><b>Kein Chromecast gefunden.</b> Gerät und Computer/Handy müssen im selben WLAN sein.</p>${airplayHelp(false)}`);
       }
     });
     dialog.showModal();
@@ -79,27 +78,26 @@ function platform() {
   return "other";
 }
 
-function airplayHelp() {
-  switch (platform()) {
-    case "mac":
-      return `<p><b>AirPlay (z. B. Denon, HomePod, Apple TV):</b> Chrome und Edge können AirPlay auf dem Mac nicht selbst ansprechen. Zwei Wege:</p>
-        <ol>
-          <li><b>Ganzen Mac-Ton umleiten:</b> oben rechts das <b>Kontrollzentrum</b> öffnen → <b>Ton</b> → deinen AirPlay-Receiver (z. B. Denon) wählen. Der Ton dieser Seite läuft dann dort.</li>
-          <li>Diese Seite in <b>Safari</b> öffnen – dort zeigt 🔊 die AirPlay-Geräte direkt an.</li>
-        </ol>`;
-    case "ios":
-      return `<p><b>AirPlay (z. B. Denon, HomePod, Apple TV):</b> Sender starten, dann das <b>Kontrollzentrum</b> öffnen, in der Musik-Kachel auf das <b>AirPlay-Symbol</b> tippen und den Receiver wählen.</p>`;
-    case "android":
-      return `<p><b>AirPlay</b> gibt es nur auf Apple-Geräten. Denon-Receiver mit HEOS lassen sich über die <b>HEOS-App</b> oder per <b>Bluetooth</b> verbinden.</p>`;
-    default:
-      return `<p><b>AirPlay</b> gibt es nur auf Apple-Geräten (iPhone, iPad, Mac). Unter Windows: Receiver per <b>Bluetooth</b> verbinden oder die Hersteller-App nutzen.</p>`;
+function airplayHelp(canAirPlay) {
+  const systemWay = {
+    mac: "oben rechts das <b>Kontrollzentrum</b> → <b>Ton</b> → Receiver wählen",
+    ios: "Sender starten, <b>Kontrollzentrum</b> öffnen → in der Musik-Kachel auf das <b>AirPlay-Symbol</b> tippen → Receiver wählen",
+  }[platform()];
+  if (!systemWay) {
+    return platform() === "android"
+      ? `<p><b>AirPlay</b> gibt es nur auf Apple-Geräten. Denon-Receiver mit HEOS lassen sich über die <b>HEOS-App</b> oder per <b>Bluetooth</b> verbinden.</p>`
+      : `<p><b>AirPlay</b> gibt es nur auf Apple-Geräten (iPhone, iPad, Mac). Unter Windows: Receiver per <b>Bluetooth</b> verbinden oder die Hersteller-App nutzen.</p>`;
   }
+  return `<p><b>AirPlay über das System</b> – klappt mit allen AirPlay-Geräten, auch älteren Receivern (z. B. Denon AVR-X2000): ${systemWay}. Der Ton dieser Seite läuft dann dort.</p>
+    ${canAirPlay ? "" : `<p class="muted small">${platform() === "mac" ? "Chrome und Edge haben am Mac keine eigene AirPlay-Liste – in Safari gibt es oben zusätzlich den Button „AirPlay-Geräte anzeigen“." : ""}</p>`}`;
 }
 
-function chooserHtml(canCast) {
+function chooserHtml(canCast, canAirPlay) {
   return `
+    ${canAirPlay ? `<p><button type="button" id="btnAirPlay" class="cast-search">📡 AirPlay-Geräte anzeigen</button></p>
+      <p class="muted small">Für HomePod, Apple TV und AirPlay-2-Lautsprecher. Ältere Receiver erscheinen hier evtl. auch, verbinden sich aber nicht – dann den Weg über das System nehmen (unten).</p>` : ""}
     ${canCast ? `<p><button type="button" id="btnCastSearch" class="cast-search">📺 Chromecast / Google Nest suchen</button></p>` : ""}
-    ${airplayHelp()}
+    ${airplayHelp(canAirPlay)}
     <p><b>Bluetooth-Lautsprecher:</b> im System verbinden – der Ton folgt automatisch.</p>
     <p class="muted small">Gerät und Computer/Handy müssen im selben WLAN sein.</p>`;
 }
