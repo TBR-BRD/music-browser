@@ -22,12 +22,13 @@ Auf dem iPad (Chrome, Vollansicht):
 
 ![Dein Music Browser auf dem iPad – Hilfe mit aufklappbaren Abschnitten](docs/screenshots/ipad-hilfe.png)
 
-**Display-Modus 🖼️** – quer und hochkant:
+**Display-Modus 🖼️** – quer:
 
-<p>
-  <img src="docs/screenshots/ipad-display-quer.jpg" alt="Display-Modus quer: Cover links, Uhr, Titel und Wetter rechts" width="62%">
-  <img src="docs/screenshots/ipad-display-hochkant.jpg" alt="Display-Modus hochkant: Cover oben, Uhr, Titel und Wetter darunter" width="30%">
-</p>
+![Display-Modus quer: Cover links, Uhr, Titel und Wetter rechts](docs/screenshots/ipad-display-quer.jpg)
+
+Hochkant:
+
+<img src="docs/screenshots/ipad-display-hochkant.jpg" alt="Display-Modus hochkant: Cover oben, Uhr, Titel und Wetter darunter" width="60%">
 
 ## Funktionen
 

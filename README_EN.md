@@ -22,12 +22,13 @@ On the iPad (Chrome, full view):
 
 ![Dein Music Browser on the iPad – help with expandable sections](docs/screenshots/ipad-hilfe.png)
 
-**Display mode 🖼️** – landscape and portrait:
+**Display mode 🖼️** – landscape:
 
-<p>
-  <img src="docs/screenshots/ipad-display-quer.jpg" alt="Display mode landscape: cover on the left, clock, title and weather on the right" width="62%">
-  <img src="docs/screenshots/ipad-display-hochkant.jpg" alt="Display mode portrait: cover on top, clock, title and weather below" width="30%">
-</p>
+![Display mode landscape: cover on the left, clock, title and weather on the right](docs/screenshots/ipad-display-quer.jpg)
+
+Portrait:
+
+<img src="docs/screenshots/ipad-display-hochkant.jpg" alt="Display mode portrait: cover on top, clock, title and weather below" width="60%">
 
 ## Features
 
