@@ -4,12 +4,12 @@
 import { load, save } from "./storage.js";
 
 const MAX_CACHE = 400;
-const memory = new Map(Object.entries(load("coverCache", {})));
+const memory = new Map(Object.entries(load("coverCache2", {})));
 let lastRequestAt = 0;
 
 function persist() {
   const entries = [...memory.entries()].slice(-MAX_CACHE);
-  save("coverCache", Object.fromEntries(entries));
+  save("coverCache2", Object.fromEntries(entries));
 }
 
 function upsize(url, size = 600) {
@@ -80,23 +80,34 @@ async function getJson(url, timeoutMs = 8000) {
   }
 }
 
-async function searchItunes(artist, title) {
+function mainArtistOf(artist) {
+  return String(artist).split(/,|&|\/|;| feat\.?| ft\.?| featuring | x | und | and | vs\.? /i)[0].trim();
+}
+
+async function itunesQuery(term) {
   await throttle();
-  const params = new URLSearchParams({
-    term: `${normalize(artist)} ${normalize(title)}`,
-    media: "music",
-    entity: "song",
-    limit: "5",
-    country: "DE",
-  });
+  const params = new URLSearchParams({ term, media: "music", entity: "song", limit: "10", country: "DE" });
   const data = await getJson(`https://itunes.apple.com/search?${params}`);
-  const results = data.results || [];
-  const wantArtist = normalize(artist);
-  const best =
-    results.find((r) => normalize(r.artistName).includes(wantArtist.split(" ")[0])) ||
-    results[0];
-  const artwork = best?.artworkUrl100 || best?.artworkUrl60;
-  return artwork ? upsize(artwork) : null;
+  return data.results || [];
+}
+
+async function searchItunes(artist, title) {
+  const wantArtist = normalize(mainArtistOf(artist));
+  const firstWord = wantArtist.split(" ")[0];
+  const artistMatches = (r) => normalize(r.artistName).includes(firstWord);
+  const pick = (results, strict) => {
+    const best = results.find(artistMatches) || (strict ? null : results[0]);
+    const artwork = best?.artworkUrl100 || best?.artworkUrl60;
+    return artwork ? upsize(artwork) : null;
+  };
+
+  // 1. alle Interpreten + Titel, 2. nur Hauptinterpret + Titel, 3. nur Titel (Interpret muss passen)
+  const full = `${normalize(artist)} ${normalize(title)}`;
+  const main = `${wantArtist} ${normalize(title)}`;
+  let found = pick(await itunesQuery(full), false);
+  if (!found && main !== full) found = pick(await itunesQuery(main), false);
+  if (!found) found = pick(await itunesQuery(normalize(title)), true);
+  return found;
 }
 
 let lastMbAt = 0;
@@ -105,7 +116,7 @@ async function searchMusicBrainz(artist, title) {
   if (wait > 0) await new Promise((r) => setTimeout(r, wait));
   lastMbAt = Date.now();
   const esc = (t) => String(t).replace(/["\\]/g, " ");
-  const mainArtist = String(artist).split(/,|&| feat\.?| ft\.?| x /i)[0].trim();
+  const mainArtist = mainArtistOf(artist);
   const query = `recording:"${esc(String(title).replace(/\(.*?\)/g, "").trim())}" AND artist:"${esc(mainArtist)}"`;
   const params = new URLSearchParams({ query, fmt: "json", limit: "5" });
   const data = await getJson(`https://musicbrainz.org/ws/2/recording/?${params}`);
