@@ -22,6 +22,13 @@ On the iPad (Chrome, full view):
 
 ![Dein Music Browser on the iPad – help with expandable sections](docs/screenshots/ipad-hilfe.png)
 
+**Display mode 🖼️** – landscape and portrait:
+
+<p>
+  <img src="docs/screenshots/ipad-display-quer.jpg" alt="Display mode landscape: cover on the left, clock, title and weather on the right" width="62%">
+  <img src="docs/screenshots/ipad-display-hochkant.jpg" alt="Display mode portrait: cover on top, clock, title and weather below" width="30%">
+</p>
+
 ## Features
 
 - **Provider buttons** (in the full view on the left above the stations): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.

@@ -22,6 +22,13 @@ Auf dem iPad (Chrome, Vollansicht):
 
 ![Dein Music Browser auf dem iPad – Hilfe mit aufklappbaren Abschnitten](docs/screenshots/ipad-hilfe.png)
 
+**Display-Modus 🖼️** – quer und hochkant:
+
+<p>
+  <img src="docs/screenshots/ipad-display-quer.jpg" alt="Display-Modus quer: Cover links, Uhr, Titel und Wetter rechts" width="62%">
+  <img src="docs/screenshots/ipad-display-hochkant.jpg" alt="Display-Modus hochkant: Cover oben, Uhr, Titel und Wetter darunter" width="30%">
+</p>
+
 ## Funktionen
 
 - **Anbieter-Buttons** (in der Vollansicht links über den Sendern): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Eigene und ★ Favoriten. Darunter stehen nur die Sender des gewählten Anbieters.
