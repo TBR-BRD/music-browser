@@ -33,6 +33,7 @@ Auf dem iPad (Chrome, Vollansicht):
 - **QR-Code** oben rechts zum Weitergeben der Seite an Freunde; ein Klick vergrößert ihn
 - **Als App speichern:** Wer die Seite über den QR-Code oder zum ersten Mal auf dem Handy öffnet, bekommt das Speichern auf dem Startbildschirm angeboten. Unter Android/Chrome genügt ein Tipp auf „Speichern“, auf iPhone/iPad erklärt der Hinweis den Weg über „Teilen → Zum Home-Bildschirm“. „Später“ blendet ihn für 30 Tage aus. Die Seite läuft dann wie eine App im Vollbild.
 - **Zwei Ansichten:** Voll (Desktop/TV) und Mobil. Sie schalten sich automatisch nach Bildschirmbreite um. Der Button 🔄/🖥️/📱 schaltet zwischen Auto, Voll und Mobil.
+- **🖼️ Display-Modus:** nur großes Cover, Titel, Interpret, Uhr, Datum und Wetter – ideal fürs iPad als Radio-Display. Antippen blendet die Steuerung ein (⏮ ▶ ⏭ ✕ Beenden), der Bildschirm bleibt an (Screen Wake Lock), wo erlaubt echtes Vollbild. Hochkant und quer jeweils mit eigenem Aufbau. Taste `D` startet, `Esc` beendet.
 - **❓ Hilfe** oben rechts (oder Taste `?`/`F1`): Bedienungsanleitung mit aufklappbaren Abschnitten
 - **Einstellungen:** Ort für das Wetter und Dunkel-/Hell-Modus
 - **🔊 Lautsprecher-Button:** streamt auf Lautsprecher – per **AirPlay** auf iPhone, iPad und Mac (HomePod, Apple TV, AirPlay-2-Lautsprecher wie neuere Sonos), per **Chromecast/Google Cast** in Chrome und Edge am Computer und per Cast in Chrome auf Android. Bluetooth-Lautsprecher verbindet man im System, der Ton folgt automatisch.
@@ -89,6 +90,7 @@ assets/             Icon, QR-Code, Wettersymbole (aus onradio-cover-bridge)
 docs/screenshots/   Screenshots für die README
 js/cast.js          Google Cast
 js/speakers.js      Lautsprecher-Button (AirPlay, Cast, Remote Playback)
+js/display.js       Display-Modus (Vollbild, Bildschirm bleibt an)
 js/storage.js       Einstellungen und Favoriten (localStorage)
 js/install.js       Angebot „Als App speichern“
 manifest.webmanifest, sw.js   Installierbare Web-App (PWA)

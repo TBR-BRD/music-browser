@@ -114,3 +114,20 @@ export function renderWeather(container, { place, data, trend }) {
     </div>
     <div class="wx-days">${days}</div>`;
 }
+
+/** Kompakte Wetterzeile für den Display-Modus: jetzt + Heute + Morgen. */
+export function renderWeatherCompact(container, { place, data }) {
+  const c = data.current || {};
+  const now = describe(c.weather_code);
+  const d = data.daily || {};
+  const day = (i, label) => {
+    if (!d.time?.[i]) return "";
+    const info = describe(d.weather_code[i]);
+    return `<div class="dmw-day"><img class="wx-icon" src="${info.icon}" alt="${esc(info.label)}">
+      <span>${label}</span><b>${temp(d.temperature_2m_max[i])} / ${temp(d.temperature_2m_min[i])}</b></div>`;
+  };
+  container.innerHTML = `
+    <div class="dmw-now"><img class="wx-icon" src="${now.icon}" alt="${esc(now.label)}">
+      <b>${temp(c.temperature_2m)}</b><span>${esc(now.label)} · ${esc(place.name)}</span></div>
+    ${day(0, "Heute")}${day(1, "Morgen")}`;
+}

@@ -33,6 +33,7 @@ On the iPad (Chrome, full view):
 - **QR code** at the top right for sharing the site with friends; click to enlarge
 - **Save as an app:** Opening the site via the QR code, or on a phone for the first time, shows an offer to save it to the home screen. On Android/Chrome one tap on "Speichern" (save) is enough; on iPhone/iPad the hint explains the way via "Share → Add to Home Screen". "Später" (later) hides it for 30 days. The site then runs full-screen like an app.
 - **Two views:** full (desktop/TV) and mobile. They switch automatically by screen width; the 🔄/🖥️/📱 button cycles through auto, full and mobile.
+- **🖼️ Display mode:** just a large cover, title, artist, clock, date and weather – ideal for an iPad as a radio display. Tap to show the controls (⏮ ▶ ⏭ ✕ Exit); the screen stays on (Screen Wake Lock) and goes true fullscreen where allowed. Separate layouts for portrait and landscape. Key `D` starts it, `Esc` exits.
 - **❓ Help** at the top right (or `?`/`F1` key): user guide with expandable sections (in German)
 - **Settings:** weather location and dark/light mode
 - **🔊 Speaker button:** streams to speakers – via **AirPlay** on iPhone, iPad and Mac (HomePod, Apple TV, AirPlay 2 speakers such as newer Sonos), via **Chromecast/Google Cast** in Chrome and Edge on the computer, and via Cast in Chrome on Android. Bluetooth speakers are connected in the operating system; audio follows automatically.
@@ -89,6 +90,7 @@ assets/             Icon, QR code, weather icons (from onradio-cover-bridge)
 docs/screenshots/   Screenshots for the README
 js/cast.js          Google Cast
 js/speakers.js      Speaker button (AirPlay, Cast, Remote Playback)
+js/display.js       Display mode (fullscreen, screen stays on)
 js/storage.js       Settings and favorites (localStorage)
 js/install.js       "Save as app" offer
 manifest.webmanifest, sw.js   Installable web app (PWA)

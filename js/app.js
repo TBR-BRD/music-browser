@@ -2,11 +2,12 @@ import { load, save, loadSettings, saveSettings } from "./storage.js";
 import { loadStations, groupsOf } from "./stations.js";
 import { fetchNowPlaying, resolveAudioUrl, hasLiveMetadata, fetchStationLogo } from "./metadata.js";
 import { findCover, stationPlaceholder, colorFor, initials } from "./cover.js";
-import { fetchWeather, renderWeather } from "./weather.js";
+import { fetchWeather, renderWeather, renderWeatherCompact } from "./weather.js";
 import { initCast, isCasting, castStream, castSetVolume, castStop, castDeviceName } from "./cast.js";
 import { GROUP_LABELS, GROUP_ORDER_LAST } from "./config.js";
 import { initInstall } from "./install.js";
 import { initSpeakers } from "./speakers.js";
+import { initDisplay, updateDisplay, updateDisplayClock } from "./display.js";
 
 const $ = (id) => document.getElementById(id);
 const el = {
@@ -113,11 +114,14 @@ function renderTrack() {
   el.artist.textContent = np?.artist || (s ? (state.playing ? "Livestream" : label(s.group)) : "Radio · Cover · Wetter");
   document.title = np ? `${np.artist} – ${np.title} · ${s.name}` : s ? `${s.name} · Dein Music Browser` : "Dein Music Browser";
   el.fav.textContent = s && state.favorites.has(s.id) ? "★" : "☆";
+  updateDisplay({ station: el.stationName.textContent, title: el.title.textContent, artist: el.artist.textContent, playing: state.playing });
   updateMediaSession();
 }
 
 function renderPlayButton() {
   el.play.textContent = state.playing ? "⏸" : "▶";
+  const dmPlay = document.getElementById("dmPlay");
+  if (dmPlay) dmPlay.textContent = state.playing ? "⏸" : "▶";
   el.play.title = state.playing ? "Stopp" : "Abspielen";
 }
 
@@ -331,11 +335,14 @@ function tickClock() {
   const now = new Date();
   el.clock.textContent = now.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
   el.date.innerHTML = `<span class="long">${DATE_FMT.format(now)}</span><span class="short">${DATE_SHORT.format(now)}</span>`;
+  updateDisplayClock(el.clock.textContent, DATE_FMT.format(now));
 }
 
 async function updateWeather() {
   try {
-    renderWeather(el.weather, await fetchWeather(state.settings.weatherLocation));
+    const weather = await fetchWeather(state.settings.weatherLocation);
+    renderWeather(el.weather, weather);
+    renderWeatherCompact(document.getElementById("dmWeather"), weather);
   } catch (error) {
     el.weather.innerHTML = `<span class="muted small">Wetter: ${error.message}</span>`;
   }
@@ -417,6 +424,7 @@ document.addEventListener("keydown", (e) => {
   if (e.target.matches("input, select, textarea") || document.querySelector("dialog[open]")) return;
   if (e.code === "Space") { e.preventDefault(); togglePlay(); }
   if (e.key === "?" || e.key === "F1") { e.preventDefault(); $("helpDialog").showModal(); }
+  if ((e.key === "d" || e.key === "D") && !document.body.classList.contains("display-mode")) $("btnDisplay").click();
   if (e.code === "ArrowRight" && e.altKey) step(1);
   if (e.code === "ArrowLeft" && e.altKey) step(-1);
 });
@@ -433,6 +441,7 @@ if ("mediaSession" in navigator) {
 
 async function init() {
   initInstall();
+  initDisplay({ onPlay: togglePlay, onPrev: () => step(-1), onNext: () => step(1) });
   applyTheme();
   applyView();
   tickClock();

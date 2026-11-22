@@ -41,6 +41,7 @@
         <div id="date" class="date"></div>
       </div>
       <button id="btnView" class="pill-btn" title="Ansicht umschalten">🖥️ Auto</button>
+      <button id="btnDisplay" class="icon-btn" title="Display-Modus: nur Cover, Titel, Uhr und Wetter" aria-label="Display-Modus">🖼️</button>
       <button id="btnHelp" class="icon-btn" title="Hilfe – so funktioniert's" aria-label="Hilfe">❓</button>
       <button id="btnSettings" class="icon-btn" title="Einstellungen" aria-label="Einstellungen">⚙️</button>
       <a class="bmc" href="https://www.buymeacoffee.com/thoralf.brandt" target="_blank" rel="noopener" title="Buy me a coffee">
@@ -170,6 +171,7 @@
       <details>
         <summary>🖥️ Ansicht und Einstellungen</summary>
         <ul>
+          <li><b>🖼️ Display-Modus:</b> nur großes Cover, Titel, Uhr und Wetter – ideal fürs iPad auf dem Tisch. Antippen zeigt die Steuerung, <b>✕ Beenden</b> (oder Esc) kehrt zurück. Der Bildschirm bleibt dabei an.</li>
           <li>Der Button <b>🔄 Auto / 🖥️ Voll / 📱 Mobil</b> wechselt die Ansicht. „Auto“ wählt passend zur Bildschirmbreite.</li>
           <li><b>⚙️ Einstellungen:</b> Ort für das Wetter und Dunkel-/Hell-Modus.</li>
           <li>Das Wetter zeigt aktuell, Heute und Morgen; der Pfeil beim Luftdruck zeigt die Tendenz der letzten 3 Stunden.</li>
@@ -236,6 +238,32 @@
       </div>
     </div>
   </aside>
+
+  <section id="displayMode" class="display-mode-view" aria-label="Display-Modus" hidden>
+    <div id="dmBg" class="dm-bg" aria-hidden="true"></div>
+    <div class="dm-inner">
+      <img id="dmCover" class="dm-cover" src="assets/no-cover.svg" alt="Cover">
+      <div class="dm-info">
+        <div class="dm-time">
+          <div id="dmClock" class="dm-clock">--:--</div>
+          <div id="dmDate" class="dm-date"></div>
+        </div>
+        <div class="dm-track">
+          <div id="dmStation" class="dm-station"></div>
+          <div id="dmTitle" class="dm-title"></div>
+          <div id="dmArtist" class="dm-artist"></div>
+        </div>
+        <div id="dmWeather" class="dm-weather"></div>
+      </div>
+    </div>
+    <div class="dm-controls" role="toolbar" aria-label="Steuerung">
+      <button id="dmPrev" title="Vorheriger Sender" aria-label="Vorheriger Sender">⏮</button>
+      <button id="dmPlay" class="dm-play" title="Abspielen/Stopp" aria-label="Abspielen/Stopp">▶</button>
+      <button id="dmNext" title="Nächster Sender" aria-label="Nächster Sender">⏭</button>
+      <button id="dmExit" class="dm-exit" title="Display-Modus beenden">✕ Beenden</button>
+    </div>
+    <div class="dm-hint">Antippen für Steuerung</div>
+  </section>
 
   <audio id="audio" preload="none"></audio>
   <script type="module" src="js/app.js"></script>
