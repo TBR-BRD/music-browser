@@ -105,6 +105,10 @@ manifest.webmanifest, sw.js   Installierbare Web-App (PWA)
 proxy/worker.js     Optionaler Metadaten-Helfer (Cloudflare Worker)
 ```
 
+## Geplante Erweiterungen
+
+- **Werbepausen bei Beats Radio erkennen (optional):** Die streamABC-Metadaten der drei Beats-Radio-Sender melden Werbung nicht direkt, liefern aber Startzeit und Länge jedes Titels. Ist die berechnete Endzeit überschritten und noch kein neuer Titel gemeldet, läuft sehr wahrscheinlich eine Werbepause. Idee: ein Schalter in den Einstellungen (standardmäßig **aus**), der dann „Werbepause“ anzeigt und auf Wunsch stummschaltet, bis der nächste Titel kommt. Offene Punkte: Der Stream läuft einige Sekunden hinter den Metadaten her (Puffer nötig), Jingles und Moderation würden mit erfasst, und die Nutzungsbedingungen der Sender sind zu beachten.
+
 ## Datenschutz
 
 Es gibt keinen eigenen Server und kein Tracking. Die Seite lädt nur die Streams und Titel der Radiosender, Cover von iTunes und das Wetter von Open-Meteo. Einstellungen und Favoriten bleiben in deinem Browser.

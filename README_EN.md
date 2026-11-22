@@ -105,6 +105,10 @@ manifest.webmanifest, sw.js   Installable web app (PWA)
 proxy/worker.js     Optional metadata helper (Cloudflare Worker)
 ```
 
+## Planned extensions
+
+- **Detect ad breaks on Beats Radio (optional):** The streamABC metadata of the three Beats Radio channels does not flag ads directly, but it provides each track's start time and duration. If the computed end time has passed and no new track has been reported, an ad break is most likely playing. Idea: a switch in the settings (**off** by default) that then shows "Ad break" and optionally mutes until the next track starts. Open points: the stream lags a few seconds behind the metadata (needs a buffer), jingles and presenter breaks would be caught too, and the stations' terms of use must be respected.
+
 ## Privacy
 
 There is no server of its own and no tracking. The site only loads the stations' streams and titles, covers from iTunes and the weather from Open-Meteo. Settings and favorites stay in your browser.
