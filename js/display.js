@@ -56,18 +56,28 @@ function showControls() {
 
 // Live-TV: Der Player bleibt in der Seite (Umhängen würde das Video stoppen)
 // und wird im Display-Modus genau über die Cover-Fläche gelegt.
+let tvWatch = null;
 function placeTv() {
   const tv = $("tvPlayer");
   if (!tv) return;
   const active = isDisplayMode() && document.body.classList.contains("tv-mode");
   document.body.classList.toggle("dm-tv", active);
-  if (!active) { tv.removeAttribute("style"); return; }
+  if (!active) {
+    clearInterval(tvWatch); tvWatch = null;
+    tv.removeAttribute("style");
+    return;
+  }
+  // iPad/iOS melden Größenänderungen (Drehen, Vollbild, Leisten) teils verspätet –
+  // deshalb solange der Modus läuft regelmäßig nachmessen.
+  if (!tvWatch) tvWatch = setInterval(placeTv, 400);
   const r = $("dmCover").getBoundingClientRect();
+  if (!r.width) return;
   const h = r.width * 9 / 16;
-  Object.assign(tv.style, {
-    position: "fixed", zIndex: "60", left: `${r.left}px`, top: `${r.top + (r.height - h) / 2}px`,
-    width: `${r.width}px`, height: `${h}px`, aspectRatio: "auto",
-  });
+  const next = {
+    position: "fixed", zIndex: "60", left: `${Math.round(r.left)}px`, top: `${Math.round(r.top + (r.height - h) / 2)}px`,
+    width: `${Math.round(r.width)}px`, height: `${Math.round(h)}px`, aspectRatio: "auto", margin: "0",
+  };
+  for (const [k, v] of Object.entries(next)) if (tv.style[k] !== v) tv.style[k] = v;
 }
 
 export function enterDisplayMode() {
@@ -123,6 +133,9 @@ export function initDisplay({ onPlay, onPrev, onNext }) {
   // TV-Player nachführen: Senderwechsel, Drehen, Vollbild, Fenstergröße
   new MutationObserver(() => requestAnimationFrame(placeTv)).observe(document.body, { attributes: true, attributeFilter: ["class"] });
   window.addEventListener("resize", () => requestAnimationFrame(placeTv));
+  window.addEventListener("orientationchange", () => setTimeout(placeTv, 300));
+  window.visualViewport?.addEventListener("resize", () => requestAnimationFrame(placeTv));
+  if ("ResizeObserver" in window) new ResizeObserver(() => placeTv()).observe($("dmCover"));
   document.addEventListener("fullscreenchange", () => setTimeout(placeTv, 100));
   document.addEventListener("webkitfullscreenchange", () => setTimeout(placeTv, 100));
   root.addEventListener("click", (e) => {
