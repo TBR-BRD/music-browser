@@ -88,7 +88,15 @@ async function fetchJson(url, timeoutMs = 8000) {
   try {
     const response = await fetch(url, { signal: ctrl.signal, cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return await response.json();
+    // Manche Anbieter (z. B. ON Radio, radionetz) liefern Latin-1 ohne Zeichensatz-Angabe.
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    let text;
+    try {
+      text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    } catch {
+      text = new TextDecoder("windows-1252").decode(bytes);
+    }
+    return JSON.parse(text);
   } finally {
     clearTimeout(timer);
   }

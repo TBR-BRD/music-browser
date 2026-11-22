@@ -1,4 +1,5 @@
-// Cover-Suche über die iTunes Search API (öffentlich, kein Schlüssel, CORS erlaubt).
+// Cover-Suche über die iTunes Search API (öffentlich, kein Schlüssel, CORS erlaubt),
+// ersatzweise MusicBrainz + Cover Art Archive.
 // Ergebnisse werden im Speicher und begrenzt in localStorage zwischengespeichert.
 import { load, save } from "./storage.js";
 
@@ -24,16 +25,63 @@ function normalize(text) {
     .trim();
 }
 
+const MISS_TTL = 6 * 60 * 60 * 1000; // „kein Cover gefunden“ nur 6 h merken
+
 export async function findCover(artist, title) {
   const key = `${normalize(artist)}|${normalize(title)}`;
   if (!artist || !title) return null;
-  if (memory.has(key)) return memory.get(key);
+  if (memory.has(key)) {
+    const hit = memory.get(key);
+    if (typeof hit === "string") return hit;
+    if (hit && Date.now() - hit.miss < MISS_TTL) return null;
+    // alte Einträge ohne Zeitstempel oder abgelaufen → neu suchen
+  }
 
+  let result = null;
+  let failed = false;
+  try {
+    result = await searchItunes(artist, title);
+  } catch (error) {
+    console.warn("[cover] iTunes:", error.message);
+    failed = true;
+  }
+  if (!result) {
+    // Ersatz wie im onradio-cover-bridge: MusicBrainz + Cover Art Archive
+    try {
+      result = await searchMusicBrainz(artist, title);
+      failed = false;
+    } catch (error) {
+      console.warn("[cover] MusicBrainz:", error.message);
+    }
+  }
+  if (failed && !result) return null; // Netz-/Drosselfehler nicht merken
+
+  memory.set(key, result || { miss: Date.now() });
+  persist();
+  return result;
+}
+
+async function throttle() {
   // iTunes drosseln (max. ~1 Anfrage alle 1,5 s)
   const wait = 1500 - (Date.now() - lastRequestAt);
   if (wait > 0) await new Promise((r) => setTimeout(r, wait));
   lastRequestAt = Date.now();
+}
 
+async function getJson(url, timeoutMs = 8000) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { signal: ctrl.signal });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function searchItunes(artist, title) {
+  await throttle();
   const params = new URLSearchParams({
     term: `${normalize(artist)} ${normalize(title)}`,
     media: "music",
@@ -41,28 +89,39 @@ export async function findCover(artist, title) {
     limit: "5",
     country: "DE",
   });
+  const data = await getJson(`https://itunes.apple.com/search?${params}`);
+  const results = data.results || [];
+  const wantArtist = normalize(artist);
+  const best =
+    results.find((r) => normalize(r.artistName).includes(wantArtist.split(" ")[0])) ||
+    results[0];
+  const artwork = best?.artworkUrl100 || best?.artworkUrl60;
+  return artwork ? upsize(artwork) : null;
+}
 
-  let result = null;
-  try {
-    const response = await fetch(`https://itunes.apple.com/search?${params}`);
-    if (response.ok) {
-      const data = await response.json();
-      const results = data.results || [];
-      const wantArtist = normalize(artist);
-      const best =
-        results.find((r) => normalize(r.artistName).includes(wantArtist.split(" ")[0])) ||
-        results[0];
-      const artwork = best?.artworkUrl100 || best?.artworkUrl60;
-      if (artwork) result = upsize(artwork);
+let lastMbAt = 0;
+async function searchMusicBrainz(artist, title) {
+  const wait = 1100 - (Date.now() - lastMbAt); // MusicBrainz: max. 1 Anfrage/s
+  if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+  lastMbAt = Date.now();
+  const esc = (t) => String(t).replace(/["\\]/g, " ");
+  const mainArtist = String(artist).split(/,|&| feat\.?| ft\.?| x /i)[0].trim();
+  const query = `recording:"${esc(String(title).replace(/\(.*?\)/g, "").trim())}" AND artist:"${esc(mainArtist)}"`;
+  const params = new URLSearchParams({ query, fmt: "json", limit: "5" });
+  const data = await getJson(`https://musicbrainz.org/ws/2/recording/?${params}`);
+  for (const rec of data.recordings || []) {
+    if ((rec.score ?? 0) < 85) continue;
+    const releases = (rec.releases || []).slice().sort((a, b) =>
+      (a["release-group"]?.["primary-type"] === "Album" ? 0 : 1) - (b["release-group"]?.["primary-type"] === "Album" ? 0 : 1));
+    for (const rel of releases.slice(0, 3)) {
+      const url = `https://coverartarchive.org/release/${rel.id}/front-500`;
+      try {
+        const head = await fetch(url, { method: "HEAD" });
+        if (head.ok) return head.url || url;
+      } catch { /* nächstes Release */ }
     }
-  } catch (error) {
-    console.warn("[cover] iTunes:", error.message);
-    return null; // Fehler nicht cachen
   }
-
-  memory.set(key, result);
-  persist();
-  return result;
+  return null;
 }
 
 const PALETTE = ["#ff8a3d", "#6c8cff", "#2bb3a3", "#d65db1", "#f5b83d", "#59c36a", "#e5534b", "#8b6cff"];
