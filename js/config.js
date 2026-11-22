@@ -16,19 +16,16 @@ export const GROUP_LABELS = {
 export const GROUP_ORDER_LAST = ["Deluxe Music TV", "Other stations"];
 
 /**
- * Live-TV-Sender mit offiziellem Web-Player (3Q). Nur DELUXE MUSIC selbst
- * ist im Netz frei als Livestream verfügbar; die Schwestersender zeigen auf
- * deluxemusic.de nur Trailer.
+ * Live-TV-Sender mit offiziellem Web-Player (3Q) von deluxemusic.de.
+ * Deluxe Rap und Deluxe Lounge zeigen dort nur Trailer und fehlen deshalb.
  */
+const tv = (id, name, dataId) => ({
+  id, name, group: "Deluxe Music TV", kind: "tv3q", dataId, homepageUrl: "https://deluxemusic.de/",
+});
 export const TV_STATIONS = [
-  {
-    id: "deluxe-music-tv",
-    name: "DELUXE MUSIC TV",
-    group: "Deluxe Music TV",
-    kind: "tv3q",
-    dataId: "d0ef730d-6e72-11ea-bce2-0cc47a188158",
-    homepageUrl: "https://deluxemusic.de/",
-  },
+  tv("deluxe-music-tv", "DELUXE MUSIC", "d0ef730d-6e72-11ea-bce2-0cc47a188158"),
+  tv("schlager-deluxe-tv", "Schlager Deluxe", "457232aa-6181-11eb-b839-0cc47a188158"),
+  tv("deluxe-dance-tv", "Deluxe Dance by Kontor", "4b652322-a2f4-11ed-a3c0-3cecef385192"),
 ];
 
 /**
