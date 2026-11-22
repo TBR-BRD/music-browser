@@ -515,3 +515,6 @@ body.view-full.tv-mode .cover-wrap { width: var(--tv-w); height: auto; aspect-ra
 }
 body.view-full.tv-mode .meta { min-height: 0; }
 body.tv-mode .volume, body.tv-mode #btnSpeakers { display: none; }
+/* Display-Modus mit Live-TV: Cover-Fläche frei lassen, der Player liegt darüber */
+body.dm-tv .dm-cover { visibility: hidden; }
+body.dm-tv .tv-player { border-radius: 1.4rem; box-shadow: 0 30px 90px rgba(0,0,0,.6); }

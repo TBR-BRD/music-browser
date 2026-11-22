@@ -54,6 +54,22 @@ function showControls() {
   hideTimer = setTimeout(() => root.classList.remove("show-controls"), HIDE_CONTROLS_MS);
 }
 
+// Live-TV: Der Player bleibt in der Seite (Umhängen würde das Video stoppen)
+// und wird im Display-Modus genau über die Cover-Fläche gelegt.
+function placeTv() {
+  const tv = $("tvPlayer");
+  if (!tv) return;
+  const active = isDisplayMode() && document.body.classList.contains("tv-mode");
+  document.body.classList.toggle("dm-tv", active);
+  if (!active) { tv.removeAttribute("style"); return; }
+  const r = $("dmCover").getBoundingClientRect();
+  const h = r.width * 9 / 16;
+  Object.assign(tv.style, {
+    position: "fixed", zIndex: "60", left: `${r.left}px`, top: `${r.top + (r.height - h) / 2}px`,
+    width: `${r.width}px`, height: `${h}px`, aspectRatio: "auto",
+  });
+}
+
 export function enterDisplayMode() {
   const root = $("displayMode");
   root.hidden = false;
@@ -61,6 +77,7 @@ export function enterDisplayMode() {
   requestFullscreen();
   requestWakeLock();
   showControls();
+  requestAnimationFrame(placeTv);
 }
 
 export function exitDisplayMode() {
@@ -70,6 +87,7 @@ export function exitDisplayMode() {
   document.body.classList.remove("display-mode");
   releaseWakeLock();
   exitFullscreen();
+  placeTv();
 }
 
 /** Text-Inhalte übernehmen (wird von app.js bei jeder Änderung aufgerufen). */
@@ -102,6 +120,11 @@ export function initDisplay({ onPlay, onPrev, onNext }) {
   syncCover();
 
   $("btnDisplay").addEventListener("click", enterDisplayMode);
+  // TV-Player nachführen: Senderwechsel, Drehen, Vollbild, Fenstergröße
+  new MutationObserver(() => requestAnimationFrame(placeTv)).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  window.addEventListener("resize", () => requestAnimationFrame(placeTv));
+  document.addEventListener("fullscreenchange", () => setTimeout(placeTv, 100));
+  document.addEventListener("webkitfullscreenchange", () => setTimeout(placeTv, 100));
   root.addEventListener("click", (e) => {
     if (e.target.closest(".dm-controls button")) return;
     showControls();
