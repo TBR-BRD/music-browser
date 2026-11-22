@@ -32,7 +32,8 @@ Hochkant:
 
 ## Funktionen
 
-- **Anbieter-Buttons** (in der Vollansicht links über den Sendern): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Eigene und ★ Favoriten. Darunter stehen nur die Sender des gewählten Anbieters.
+- **Anbieter-Buttons** (in der Vollansicht links über den Sendern): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Deluxe Music TV, Eigene und ★ Favoriten. Darunter stehen nur die Sender des gewählten Anbieters.
+- **📺 Live-TV DELUXE MUSIC:** Unter „Deluxe Music TV“ läuft der Musik-TV-Sender im offiziellen Player des Senders direkt an Stelle des Covers (Lautstärke und Vollbild im Player). Die Schwestersender (Schlager Deluxe, Deluxe Rap, Deluxe Dance, Deluxe Lounge) gibt es im Netz nicht frei als Livestream.
 - **Suche** über alle Sender, auch mit mehreren Wörtern (z. B. „bob rock“)
 - **Favoriten** per ☆ beim laufenden Sender
 - **Großes Cover und aktueller Titel** bei 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH und ENERGY, direkt von deren Schnittstellen und sonst über die iTunes-Suche. Ohne laufenden Titel erscheint das Senderlogo des Anbieters.

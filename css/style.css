@@ -498,3 +498,20 @@ body.display-mode { overflow: hidden; }
 }
 /* Sehr schmale Handys: kein Platz für den Display-Button in der Kopfzeile */
 @media (max-width: 430px) { body.view-mobile #btnDisplay { display: none; } }
+
+/* ---------------------------------------------------------------- Live-TV */
+.tv-player { width: 100%; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: #000; box-shadow: var(--shadow); }
+.tv-player > div { width: 100%; height: 100%; }
+body.tv-mode .cover-wrap { aspect-ratio: auto; }
+body.tv-mode .cover { display: none; }
+body.view-mobile.tv-mode .cover-wrap { width: min(94vw, 640px); }
+body.view-full.tv-mode .now-playing {
+  --tv-w: min(calc(100vw - var(--side) - var(--meta-w) - 56px - 28px), 1100px);
+  grid-template-columns: var(--tv-w) var(--meta-w);
+}
+body.view-full.tv-mode .cover-wrap { width: var(--tv-w); height: auto; aspect-ratio: auto; }
+@media (max-width: 1060px) {
+  body.view-full.tv-mode .now-playing { --tv-w: min(calc(100vw - var(--side) - 56px), 900px); grid-template-columns: var(--tv-w); }
+}
+body.view-full.tv-mode .meta { min-height: 0; }
+body.tv-mode .volume, body.tv-mode #btnSpeakers { display: none; }

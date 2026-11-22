@@ -379,6 +379,7 @@ async function fetchIcy(station, proxyUrl) {
  */
 export async function fetchNowPlaying(station) {
   const proxyUrl = METADATA_PROXY;
+  if (station?.kind === "tv3q") return null;
   try {
     if (station.group === "HIT RADIO FFH") return await fetchFfh(station);
     if (station.group === "ENERGY") return await fetchEnergy(station);
@@ -404,6 +405,7 @@ export async function fetchNowPlaying(station) {
 
 /** Liefert dieser Sender im Browser Titel und Cover? */
 export function hasLiveMetadata(station) {
+  if (station?.kind === "tv3q") return false;
   if (NO_METADATA_GROUPS.includes(station.group)) return false;
   if (STREAMABC_CHANNELS[station.id]) return true;
   if (METADATA_PROXY) return true;

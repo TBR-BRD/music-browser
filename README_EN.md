@@ -32,7 +32,8 @@ Portrait:
 
 ## Features
 
-- **Provider buttons** (in the full view on the left above the stations): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.
+- **Provider buttons** (in the full view on the left above the stations): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Deluxe Music TV, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.
+- **📺 Live TV DELUXE MUSIC:** Under "Deluxe Music TV" the music TV channel plays in the station's official player in place of the cover (volume and fullscreen inside the player). The sister channels (Schlager Deluxe, Deluxe Rap, Deluxe Dance, Deluxe Lounge) are not freely available as a web livestream.
 - **Search** across all stations, including multiple words (e.g. "bob rock")
 - **Favorites** via ☆ on the playing station
 - **Large cover and current track** for 80s80s, RADIO BOB!, Sunshine Live, HIT RADIO FFH and ENERGY, straight from their APIs, otherwise via the iTunes search. Without a current track, the provider's station logo is shown.

@@ -4,7 +4,8 @@ import { fetchNowPlaying, resolveAudioUrl, hasLiveMetadata, fetchStationLogo } f
 import { findCover, stationPlaceholder, colorFor, initials } from "./cover.js";
 import { fetchWeather, renderWeather, renderWeatherCompact } from "./weather.js";
 import { initCast, isCasting, castStream, castSetVolume, castStop, castDeviceName } from "./cast.js";
-import { GROUP_LABELS, GROUP_ORDER_LAST } from "./config.js";
+import { GROUP_LABELS, GROUP_ORDER_LAST, TV_STATIONS } from "./config.js";
+import { isTv, startTv, stopTv } from "./tv.js";
 import { initInstall } from "./install.js";
 import { initSpeakers } from "./speakers.js";
 import { initDisplay, updateDisplay, updateDisplayClock } from "./display.js";
@@ -17,7 +18,7 @@ const el = {
   volume: $("volume"), list: $("stationList"), providers: $("providers"),
   providerTitle: $("providerTitle"), search: $("search"), info: $("stationInfo"),
   weather: $("weather"), clock: $("clock"), date: $("date"), view: $("btnView"),
-  settings: $("settings"), settingsForm: $("settingsForm"),
+  settings: $("settings"), settingsForm: $("settingsForm"), tv: $("tvPlayer"),
 };
 
 const FAVS = "__favs";
@@ -111,7 +112,7 @@ function renderTrack() {
   const np = state.nowPlaying;
   el.stationName.textContent = s ? s.name : "Sender wählen";
   el.title.textContent = np?.title || (s ? s.name : "Dein Music Browser");
-  el.artist.textContent = np?.artist || (s ? (state.playing ? "Livestream" : label(s.group)) : "Radio · Cover · Wetter");
+  el.artist.textContent = np?.artist || (s ? (state.playing ? (isTv(s) ? "Live-TV" : "Livestream") : label(s.group)) : "Radio · Cover · Wetter");
   document.title = np ? `${np.artist} – ${np.title} · ${s.name}` : s ? `${s.name} · Dein Music Browser` : "Dein Music Browser";
   el.fav.textContent = s && state.favorites.has(s.id) ? "★" : "☆";
   updateDisplay({ station: el.stationName.textContent, title: el.title.textContent, artist: el.artist.textContent, playing: state.playing });
@@ -219,8 +220,48 @@ function startPolling() {
   state.pollTimer = setInterval(pollMetadata, POLL_MS);
 }
 
+function leaveTv() {
+  if (!document.body.classList.contains("tv-mode")) return;
+  stopTv(el.tv);
+  el.tv.hidden = true;
+  document.body.classList.remove("tv-mode");
+}
+
+async function playTv(station, token) {
+  el.audio.pause();
+  el.audio.removeAttribute("src");
+  if (isCasting()) castStop();
+  document.body.classList.add("tv-mode");
+  el.tv.hidden = false;
+  try {
+    await startTv(station, el.tv);
+    if (token !== state.playToken) return;
+    state.playing = true;
+    setStatus("Live-TV im offiziellen Player des Senders – Lautstärke und Vollbild direkt im Bild.");
+  } catch (error) {
+    if (token !== state.playToken) return;
+    leaveTv();
+    state.playing = false;
+    setStatus(error.message);
+  }
+  renderPlayButton();
+  renderTrack();
+}
+
 async function play(station) {
   const token = ++state.playToken;
+  if (isTv(station)) {
+    stopPolling();
+    state.nowPlaying = null;
+    state.current = station;
+    save("lastStation", station.id);
+    showStationCover(station);
+    renderTrack();
+    renderList();
+    setStatus("Lade Player …");
+    return playTv(station, token);
+  }
+  leaveTv();
   if (state.current?.id !== station.id) {
     state.nowPlaying = null;
     showStationCover(station);
@@ -275,6 +316,7 @@ function stop() {
   state.playToken++;
   state.playing = false;
   stopPolling(); // Titel und Cover bleiben stehen, bis wieder abgespielt wird
+  leaveTv();
   el.audio.pause();
   el.audio.removeAttribute("src");
   el.audio.load(); // Live-Stream wirklich trennen
@@ -474,10 +516,11 @@ async function init() {
 
   try {
     const { stations, source } = await loadStations();
-    state.stations = stations;
+    state.stations = [...stations, ...TV_STATIONS];
     el.info.textContent = `${stations.length} Sender${source === "cache" ? " (Offline-Kopie)" : ""}`;
   } catch (error) {
     el.info.textContent = `Senderliste nicht ladbar: ${error.message}`;
+    state.stations = [...TV_STATIONS];
   }
 
   const groups = groupsOf(state.stations);
