@@ -568,3 +568,7 @@ body.view-mobile #btnView .txt { display: none; }
 .dm-station { color: #7ef3ff; text-shadow: 0 0 12px rgba(126, 243, 255, .6); }
 .dm-controls .dm-play { background: linear-gradient(135deg, #ff3df2, #7a5cff); color: #fff; box-shadow: 0 0 26px rgba(255, 61, 242, .6); }
 .dm-cover { box-shadow: 0 0 0 1px rgba(255, 61, 242, .45), 0 0 70px rgba(255, 61, 242, .35), 0 30px 90px rgba(0, 0, 0, .6); }
+
+/* Uhrzeit und Datum nebeneinander (Vollansicht) */
+body.view-full .datetime { display: flex; align-items: baseline; gap: 12px; text-align: left; }
+body.view-full .datetime .date { font-size: 14px; }
