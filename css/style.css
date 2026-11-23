@@ -1,24 +1,26 @@
 /* Farben wie im Projekt onradio-cover-bridge */
 :root,
 [data-theme="dark"] {
+  /* Design „Neon Night“: Schwarz mit Magenta/Cyan */
   color-scheme: dark;
-  --bg: #080b14;
-  --bg-glow: #172140;
-  --panel: rgba(16, 21, 35, 0.9);
-  --panel-soft: rgba(22, 28, 47, 0.8);
-  --hover: rgba(122, 182, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.08);
-  --text: #f6f8ff;
-  --muted: #b3bdd6;
-  --accent: #7ab6ff;
-  --accent-strong: #4e95ff;
-  --on-accent: #06101f;
+  --bg: #05030a;
+  --bg-glow: #1a0630;
+  --panel: rgba(14, 8, 24, 0.92);
+  --panel-soft: rgba(24, 12, 40, 0.85);
+  --hover: rgba(255, 61, 242, 0.08);
+  --border: rgba(255, 61, 242, 0.18);
+  --text: #f7f3ff;
+  --muted: #b9a6d9;
+  --accent: #ff3df2;
+  --accent-strong: #7a5cff;
+  --neon-cyan: #7ef3ff;
+  --on-accent: #ffffff;
   --danger: #ff7f9d;
-  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   --radius: 1.2rem;
-  --inset: rgba(7, 13, 24, 0.42);
-  --inset-border: rgba(255, 255, 255, 0.06);
-  --trend-up: #9fd1ff;
+  --inset: rgba(5, 3, 12, 0.45);
+  --inset-border: rgba(126, 243, 255, 0.08);
+  --trend-up: #7ef3ff;
 }
 
 [data-theme="light"] {
@@ -185,7 +187,7 @@ h1, h2 { margin: 0; }
 
 /* QR-Code */
 .qr-btn {
-  width: 56px; height: 56px; padding: 4px; border-radius: 0.7rem; border: 0; cursor: pointer;
+  width: 44px; height: 44px; padding: 3px; border-radius: 12px; border: 0; cursor: pointer;
   background: #fff; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); flex: none;
 }
 .qr-btn img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
@@ -240,7 +242,7 @@ body.view-mobile .topright { grid-row: 1; grid-column: 2; }
 body.view-mobile .date .long, body.view-full .date .short { display: none; }
 body.view-mobile #btnView .txt { display: none; }
 body.view-mobile .topright { gap: 8px; }
-body.view-mobile .topright .bmc, body.view-mobile .qr-btn, body.view-mobile .qr-hint { display: none; }
+body.view-mobile .topright .tb-coffee, body.view-mobile .qr-btn, body.view-mobile .qr-hint { display: none; }
 body.view-mobile .weather { width: 100%; text-align: left; margin-top: 16px; }
 body.view-mobile .clock { font-size: 20px; }
 body.view-mobile #btnView { padding: 6px 9px; }
@@ -518,3 +520,51 @@ body.tv-mode .volume, body.tv-mode #btnSpeakers { display: none; }
 /* Display-Modus mit Live-TV: Cover-Fläche frei lassen, der Player liegt darüber */
 body.dm-tv .dm-cover { visibility: hidden; }
 body.dm-tv .tv-player { border-radius: 1.4rem; box-shadow: 0 30px 90px rgba(0,0,0,.6); }
+
+/* ---------------------------------------------------- Kopfzeilen-Buttons */
+.tb-btn {
+  height: 42px; min-width: 42px; padding: 0 11px; border-radius: 12px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  background: var(--panel-soft); border: 1px solid var(--border); color: var(--text);
+  font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap;
+  transition: border-color .2s, box-shadow .2s, color .2s, transform .15s;
+}
+.tb-btn .ico { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.tb-btn:hover { border-color: var(--accent); color: var(--accent); }
+.tb-btn:active { transform: scale(.96); }
+.tb-wide { padding: 0 14px 0 12px; }
+.tb-coffee { color: var(--neon-cyan, var(--accent)); }
+[data-theme="dark"] .tb-btn:hover { box-shadow: 0 0 16px rgba(255, 61, 242, .35); }
+[data-theme="light"] .tb-coffee { color: var(--accent); }
+body.view-mobile .tb-btn { height: 36px; min-width: 36px; padding: 0 8px; }
+body.view-mobile .tb-btn .ico { width: 18px; height: 18px; }
+body.view-mobile #btnView .txt { display: none; }
+
+/* ------------------------------------------------- Neon Night (Dunkel) */
+[data-theme="dark"] body {
+  background:
+    radial-gradient(900px 500px at 75% 20%, rgba(255, 61, 242, .2), transparent 60%),
+    radial-gradient(800px 600px at 20% 90%, rgba(0, 229, 255, .14), transparent 60%),
+    #05030a fixed;
+}
+[data-theme="dark"] .cover {
+  border-radius: 18px;
+  box-shadow: 0 0 0 1px rgba(255, 61, 242, .5), 0 0 60px rgba(255, 61, 242, .4), 0 0 140px rgba(0, 229, 255, .22);
+}
+[data-theme="dark"] .track-title {
+  font-weight: 900; text-transform: uppercase; letter-spacing: .01em;
+  background: linear-gradient(90deg, #fff, #ff9df7 60%, #7ef3ff);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+[data-theme="dark"] .station-name { color: var(--neon-cyan); text-shadow: 0 0 12px rgba(126, 243, 255, .6); }
+[data-theme="dark"] .play-btn { box-shadow: 0 0 30px rgba(255, 61, 242, .65); }
+[data-theme="dark"] .provider.active { box-shadow: 0 0 18px rgba(255, 61, 242, .5); }
+[data-theme="dark"] .station.active { outline-color: var(--accent); box-shadow: inset 3px 0 0 var(--neon-cyan); }
+[data-theme="dark"] .clock { color: var(--neon-cyan); text-shadow: 0 0 14px rgba(126, 243, 255, .55); }
+[data-theme="dark"] .np-card, [data-theme="dark"] .weather { border-color: rgba(126, 243, 255, .16); }
+[data-theme="dark"] .tv-player { box-shadow: 0 0 0 1px rgba(255, 61, 242, .45), 0 0 60px rgba(255, 61, 242, .35); }
+
+/* Display-Modus im Neon-Stil */
+.dm-station { color: #7ef3ff; text-shadow: 0 0 12px rgba(126, 243, 255, .6); }
+.dm-controls .dm-play { background: linear-gradient(135deg, #ff3df2, #7a5cff); color: #fff; box-shadow: 0 0 26px rgba(255, 61, 242, .6); }
+.dm-cover { box-shadow: 0 0 0 1px rgba(255, 61, 242, .45), 0 0 70px rgba(255, 61, 242, .35), 0 30px 90px rgba(0, 0, 0, .6); }

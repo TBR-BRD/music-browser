@@ -24,7 +24,11 @@ const el = {
 const FAVS = "__favs";
 const POLL_MS = 15000;
 const VIEW_MODES = ["auto", "full", "mobile"];
-const VIEW_LABELS = { auto: ["🔄", "Auto"], full: ["🖥️", "Voll"], mobile: ["📱", "Mobil"] };
+const VIEW_LABELS = {
+  auto: ['<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.9-3M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.9 3M20 20v-4h-4"/></svg>', "Auto"],
+  full: ['<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>', "Voll"],
+  mobile: ['<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>', "Mobil"],
+};
 const mobileQuery = window.matchMedia("(max-width: 860px)");
 
 const state = {
@@ -56,7 +60,7 @@ function applyView() {
   if (mobile && el.providers.parentElement !== brand.parentElement) brand.after(el.providers);
   if (!mobile && el.providers.parentElement !== browser) browser.prepend(el.providers);
   const [icon, text] = VIEW_LABELS[state.viewMode];
-  el.view.innerHTML = `${icon}<span class="txt"> ${text}</span>`;
+  el.view.innerHTML = `${icon}<span class="txt">${text}</span>`;
   el.view.title = state.viewMode === "auto"
     ? `Automatisch (gerade ${mobile ? "Mobil" : "Voll"}) – klicken zum Umschalten`
     : "Klicken zum Umschalten";
@@ -71,7 +75,7 @@ function cycleView() {
 function applyTheme() {
   document.documentElement.dataset.theme = state.settings.theme;
   document.querySelector('meta[name="theme-color"]')
-    .setAttribute("content", state.settings.theme === "light" ? "#eef2fa" : "#080b14");
+    .setAttribute("content", state.settings.theme === "light" ? "#eef2fa" : "#05030a");
 }
 
 // ---------------------------------------------------------------- Anzeige
