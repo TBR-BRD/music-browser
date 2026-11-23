@@ -32,7 +32,8 @@ Hochkant:
 
 ## Funktionen
 
-- **Anbieter-Buttons** (in der Vollansicht links über den Sendern): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Deluxe Music TV, Eigene und ★ Favoriten. Darunter stehen nur die Sender des gewählten Anbieters.
+- **Anbieter-Buttons** (in der Vollansicht links über den Sendern): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, TV, Deluxe Music TV, Eigene und ★ Favoriten. Darunter stehen nur die Sender des gewählten Anbieters.
+- **📺 TV:** Die öffentlich-rechtlichen Sender (Das Erste, ZDF, 3sat, ARTE, ZDFneo, ZDFinfo, phoenix, tagesschau24, ARD alpha, KiKA und die Dritten von BR, hr, MDR, NDR, Radio Bremen, rbb, SR, SWR, WDR) über ihre offiziellen Livestreams. Viele davon laufen nur in Deutschland. Private Sender wie RTL, Sat.1 oder ProSieben gibt es nicht frei als Stream.
 - **📺 Live-TV DELUXE MUSIC:** Unter „Deluxe Music TV“ laufen die Musik-TV-Sender im offiziellen Player des Senders direkt an Stelle des Covers (Lautstärke und Vollbild im Player). Dabei sind DELUXE MUSIC, Schlager Deluxe und Deluxe Dance by Kontor; Deluxe Rap und Deluxe Lounge zeigen auf deluxemusic.de nur Trailer.
 - **Suche** über alle Sender, auch mit mehreren Wörtern (z. B. „bob rock“)
 - **Favoriten** per ☆ beim laufenden Sender

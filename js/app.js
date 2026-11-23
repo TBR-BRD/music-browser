@@ -4,7 +4,7 @@ import { fetchNowPlaying, resolveAudioUrl, hasLiveMetadata, fetchStationLogo } f
 import { findCover, stationPlaceholder, colorFor, initials } from "./cover.js";
 import { fetchWeather, renderWeather, renderWeatherCompact } from "./weather.js";
 import { initCast, isCasting, castStream, castSetVolume, castStop, castDeviceName } from "./cast.js";
-import { GROUP_LABELS, GROUP_ORDER_LAST, TV_STATIONS } from "./config.js";
+import { GROUP_LABELS, GROUP_ORDER_LAST, TV_STATIONS, GERMAN_TV } from "./config.js";
 import { isTv, startTv, stopTv } from "./tv.js";
 import { initInstall } from "./install.js";
 import { initSpeakers } from "./speakers.js";
@@ -237,7 +237,7 @@ async function playTv(station, token) {
     await startTv(station, el.tv);
     if (token !== state.playToken) return;
     state.playing = true;
-    setStatus("Live-TV im offiziellen Player des Senders – Lautstärke und Vollbild direkt im Bild.");
+    setStatus("Live-TV – Lautstärke und Vollbild direkt im Bild.");
   } catch (error) {
     if (token !== state.playToken) return;
     leaveTv();
@@ -516,11 +516,11 @@ async function init() {
 
   try {
     const { stations, source } = await loadStations();
-    state.stations = [...stations, ...TV_STATIONS];
+    state.stations = [...stations, ...GERMAN_TV, ...TV_STATIONS];
     el.info.textContent = `${stations.length} Sender${source === "cache" ? " (Offline-Kopie)" : ""}`;
   } catch (error) {
     el.info.textContent = `Senderliste nicht ladbar: ${error.message}`;
-    state.stations = [...TV_STATIONS];
+    state.stations = [...GERMAN_TV, ...TV_STATIONS];
   }
 
   const groups = groupsOf(state.stations);

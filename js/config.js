@@ -13,7 +13,7 @@ export const GROUP_LABELS = {
 };
 
 /** Reihenfolge der Anbieter-Buttons (unbekannte Gruppen werden davor einsortiert) */
-export const GROUP_ORDER_LAST = ["Deluxe Music TV", "Other stations"];
+export const GROUP_ORDER_LAST = ["TV", "Deluxe Music TV", "Other stations"];
 
 /**
  * Live-TV-Sender mit offiziellem Web-Player (3Q) von deluxemusic.de.
@@ -81,3 +81,40 @@ export const STREAMABC_CHANNELS = {
   "beats-radio-nu-disco": "klr_qohdzgv3jpl_mzy9",
   "beats-radio-chillout-beats": "klr_jk3tmcvoltq_szz1",
 };
+
+
+/**
+ * Deutsche TV-Sender (öffentlich-rechtlich) mit ihren offiziellen, frei
+ * zugänglichen HLS-Livestreams. Viele sind auf Deutschland beschränkt (Geo-IP).
+ * Private Sender (RTL, Sat.1, ProSieben …) gibt es nicht frei als Stream.
+ */
+const hlsTv = (id, name, streamUrl) => ({ id: `tv-${id}`, name, group: "TV", kind: "hls", streamUrl });
+export const GERMAN_TV = [
+  hlsTv("daserste", "Das Erste", "https://daserste-live.ard-mcdn.de/daserste/live/hls/de/master.m3u8"),
+  hlsTv("zdf", "ZDF", "https://zdf-hls-15.akamaized.net/hls/live/2016498/de/high/master.m3u8"),
+  hlsTv("3sat", "3sat", "https://zdf-hls-18.akamaized.net/hls/live/2016501/dach/high/master.m3u8"),
+  hlsTv("arte", "ARTE", "https://artesimulcast.akamaized.net/hls/live/2030993/artelive_de/index.m3u8"),
+  hlsTv("zdfneo", "ZDFneo", "https://zdf-hls-16.akamaized.net/hls/live/2016499/de/high/master.m3u8"),
+  hlsTv("zdfinfo", "ZDFinfo", "https://zdf-hls-17.akamaized.net/hls/live/2016500/de/high/master.m3u8"),
+  hlsTv("phoenix", "phoenix", "https://zdf-hls-19.akamaized.net/hls/live/2016502/de/high/master.m3u8"),
+  hlsTv("tagesschau24", "tagesschau24", "https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8"),
+  hlsTv("ardalpha", "ARD alpha", "https://mcdn.br.de/br/fs/ard_alpha/hls/de/master.m3u8"),
+  hlsTv("kika", "KiKA", "https://kikageohls.akamaized.net/hls/live/2022693/livetvkika_de/master.m3u8"),
+  hlsTv("rbb-berlin", "rbb Berlin", "https://rbb-hls-berlin.akamaized.net/hls/live/2017824/rbb_berlin/index.m3u8"),
+  hlsTv("rbb-brandenburg", "rbb Brandenburg", "https://rbb-hls-brandenburg.akamaized.net/hls/live/2017825/rbb_brandenburg/master.m3u8"),
+  hlsTv("br-sued", "BR Fernsehen Süd", "https://mcdn.br.de/br/fs/bfs_sued/hls/de/master.m3u8"),
+  hlsTv("br-nord", "BR Fernsehen Nord", "https://mcdn.br.de/br/fs/bfs_nord/hls/de/master.m3u8"),
+  hlsTv("hr", "hr-fernsehen", "https://hrhls.akamaized.net/hls/live/2024525/hrhls/index.m3u8"),
+  hlsTv("mdr-sachsen", "MDR Sachsen", "https://mdrtvsnhls.akamaized.net/hls/live/2016928/mdrtvsn/index.m3u8"),
+  hlsTv("mdr-sachsen-anhalt", "MDR Sachsen-Anhalt", "https://mdrtvsahls.akamaized.net/hls/live/2016879/mdrtvsa/index.m3u8"),
+  hlsTv("mdr-thueringen", "MDR Thüringen", "https://mdrtvthhls.akamaized.net/hls/live/2016880/mdrtvth/index.m3u8"),
+  hlsTv("ndr-hh", "NDR Hamburg", "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_hh/master.m3u8"),
+  hlsTv("ndr-mv", "NDR Mecklenburg-Vorpommern", "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_mv/master.m3u8"),
+  hlsTv("ndr-nds", "NDR Niedersachsen", "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_nds/master.m3u8"),
+  hlsTv("ndr-sh", "NDR Schleswig-Holstein", "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_sh/master.m3u8"),
+  hlsTv("radiobremen", "Radio Bremen", "https://rbhlslive.akamaized.net/hls/live/2020435/rbfs/master.m3u8"),
+  hlsTv("sr", "SR Fernsehen", "https://srfs.akamaized.net/hls/live/689649/srfsgeo/index.m3u8"),
+  hlsTv("swr-bw", "SWR Baden-Württemberg", "https://swrbwd-hls.akamaized.net/hls/live/2018672/swrbwd/master.m3u8"),
+  hlsTv("swr-rp", "SWR Rheinland-Pfalz", "https://swrrpd-hls.akamaized.net/hls/live/2018676/swrrpd/master.m3u8"),
+  hlsTv("wdr", "WDR Fernsehen", "https://wdr-live.ard-mcdn.de/wdr/live/hls/de/master.m3u8"),
+];

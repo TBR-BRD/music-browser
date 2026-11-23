@@ -32,7 +32,8 @@ Portrait:
 
 ## Features
 
-- **Provider buttons** (in the full view on the left above the stations): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, Deluxe Music TV, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.
+- **Provider buttons** (in the full view on the left above the stations): ON Radio, 80s80s, Sunshine Live, RADIO BOB!, HIT RADIO FFH, Absolut Radio, ENERGY, ANTENNE BAYERN, Beats Radio, TV, Deluxe Music TV, Eigene (own stations) and ★ Favoriten (favorites). Only the selected provider's stations are listed below.
+- **📺 TV:** German public channels (Das Erste, ZDF, 3sat, ARTE, ZDFneo, ZDFinfo, phoenix, tagesschau24, ARD alpha, KiKA and the regional channels of BR, hr, MDR, NDR, Radio Bremen, rbb, SR, SWR, WDR) via their official livestreams. Many of them are only available in Germany. Private channels such as RTL, Sat.1 or ProSieben are not freely available as streams.
 - **📺 Live TV DELUXE MUSIC:** Under "Deluxe Music TV" the music TV channels play in the station's official player in place of the cover (volume and fullscreen inside the player). Included are DELUXE MUSIC, Schlager Deluxe and Deluxe Dance by Kontor; Deluxe Rap and Deluxe Lounge only show trailers on deluxemusic.de.
 - **Search** across all stations, including multiple words (e.g. "bob rock")
 - **Favorites** via ☆ on the playing station
