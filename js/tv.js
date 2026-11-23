@@ -48,17 +48,27 @@ async function startHls(station, container) {
   video.setAttribute("x-webkit-airplay", "allow");
   video.style.cssText = "width:100%;height:100%;background:#000;display:block";
   container.appendChild(video);
-  if (video.canPlayType("application/vnd.apple.mpegurl")) {
-    video.src = station.streamUrl;
-  } else {
+  // hls.js zuerst: Chromes eingebautes HLS scheitert an manchen Sendern (z. B. KiKA, WDR).
+  // Ohne MediaSource (iPhone) bleibt die eingebaute Wiedergabe.
+  let useHlsJs = false;
+  try {
     await loadHlsJs();
-    if (!window.Hls.isSupported()) throw new Error("Dieser Browser kann den Videostream nicht abspielen.");
-    hls = new window.Hls({ lowLatencyMode: false, capLevelToPlayerSize: true });
+    useHlsJs = window.Hls.isSupported();
+  } catch { /* kein hls.js → nativ versuchen */ }
+  if (useHlsJs) {
+    hls = new window.Hls({ capLevelToPlayerSize: true });
     hls.loadSource(station.streamUrl);
     hls.attachMedia(video);
     hls.on(window.Hls.Events.ERROR, (_e, data) => {
-      if (data?.fatal) console.warn("[tv] HLS-Fehler:", data.type, data.details);
+      if (!data?.fatal) return;
+      console.warn("[tv] HLS-Fehler:", data.type, data.details);
+      if (data.type === window.Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
+      else if (data.type === window.Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
     });
+  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+    video.src = station.streamUrl;
+  } else {
+    throw new Error("Dieser Browser kann den Videostream nicht abspielen.");
   }
   try {
     await video.play();
