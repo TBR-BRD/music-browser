@@ -49,6 +49,10 @@ Portrait:
 - **🔊 Speaker button:** streams to speakers – via **AirPlay** on iPhone, iPad and Mac (HomePod, Apple TV, AirPlay 2 speakers such as newer Sonos), via **Chromecast/Google Cast** in Chrome and Edge on the computer, and via Cast in Chrome on Android. Bluetooth speakers are connected in the operating system; audio follows automatically.
 - Media keys and lock-screen info (Media Session API); space bar = play/stop
 
+## Home Assistant
+
+As a card for the Home Assistant dashboard (radio, live TV, weather; audio on the device or via AirPlay): **[homeassistant-music-browser](https://github.com/TBR-BRD/homeassistant-music-browser)**. The card uses the building blocks of this web app straight from GitHub Pages.
+
 ## Station list
 
 Stations are loaded live from [radiostations](https://github.com/TBR-BRD/radiostations), the shared catalog for this project, the [Google TV app](https://github.com/TBR-BRD/googletv-musicplayer) and the [Raspberry Pi](https://github.com/TBR-BRD/onradio-cover-bridge). Add a station there once and it shows up everywhere. The group "Other stations" is called **Eigene** here.

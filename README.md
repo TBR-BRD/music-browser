@@ -49,6 +49,10 @@ Hochkant:
 - **🔊 Lautsprecher-Button:** streamt auf Lautsprecher – per **AirPlay** auf iPhone, iPad und Mac (HomePod, Apple TV, AirPlay-2-Lautsprecher wie neuere Sonos), per **Chromecast/Google Cast** in Chrome und Edge am Computer und per Cast in Chrome auf Android. Bluetooth-Lautsprecher verbindet man im System, der Ton folgt automatisch.
 - Medientasten und Sperrbildschirm-Anzeige (Media Session API), Leertaste für Play/Stopp
 
+## Home Assistant
+
+Als Karte fürs Home-Assistant-Dashboard (Radio, Live-TV, Wetter; Ton auf dem Gerät bzw. per AirPlay): **[homeassistant-music-browser](https://github.com/TBR-BRD/homeassistant-music-browser)**. Die Karte nutzt die Bausteine dieser Web-App direkt von GitHub Pages.
+
 ## Senderliste
 
 Die Sender kommen live aus [radiostations](https://github.com/TBR-BRD/radiostations), dem gemeinsamen Katalog für dieses Projekt, die [Google-TV-App](https://github.com/TBR-BRD/googletv-musicplayer) und den [Raspberry Pi](https://github.com/TBR-BRD/onradio-cover-bridge). Ein neuer Sender wird dort einmal eingetragen und erscheint dann überall. Die Gruppe „Other stations“ heißt hier **Eigene**.
