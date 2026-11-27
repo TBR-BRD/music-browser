@@ -23,9 +23,14 @@ const TRENDS = {
 
 let geoCache = null;
 
-function describe(code) {
+// Absolute Adresse, damit die Symbole auch in eingebetteten Seiten (z. B. der
+// Home-Assistant-Karte homeassistant-music-browser) gefunden werden.
+const ICON_BASE = new URL("../assets/weather-icons/", import.meta.url).href;
+export const weatherIconUrl = (name) => `${ICON_BASE}${name}.svg`;
+
+export function describe(code) {
   const [label, icon] = CODES[code] || ["Wetter", "unknown"];
-  return { label, icon: `assets/weather-icons/${icon}.svg` };
+  return { label, icon: weatherIconUrl(icon) };
 }
 
 const esc = (v) => String(v ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
