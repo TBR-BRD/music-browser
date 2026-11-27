@@ -76,6 +76,21 @@ Eine Webseite darf Daten fremder Server nur lesen, wenn der Anbieter das erlaubt
 
 Für die Anbieter, die fremde Webseiten sperren, nutzt die Seite einen kleinen **Helfer**: den kostenlosen Cloudflare Worker aus [`proxy/worker.js`](proxy/worker.js). Er holt die Titel ab und gibt sie nur an diese Seite weiter (Adresse in `js/config.js` → `METADATA_PROXY`). Wer die Seite forkt, richtet sich einen eigenen Worker ein oder lässt `METADATA_PROXY` leer – dann fehlen nur bei diesen Anbietern die Titel.
 
+### Weitere Seiten freischalten (z. B. Home Assistant)
+
+Der Worker antwortet nur Seiten, die in der Variable `ALLOWED_ORIGINS` stehen (ohne Variable nur `https://tbr-brd.github.io`). So ergänzt du weitere Adressen, z. B. für die [Home-Assistant-Karte](https://github.com/TBR-BRD/homeassistant-music-browser):
+
+1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Compute (Workers) → Workers & Pages** → Worker **`music-proxy`**.
+2. Reiter **Settings** → **Variables and Secrets** → **+ Add**.
+3. **Production** angehakt lassen, **Key** `ALLOWED_ORIGINS`, **Value** alle Adressen kommagetrennt, **Secret** nicht anhaken:
+   ```
+   https://tbr-brd.github.io,http://192.168.42.179:8123
+   ```
+4. **Add variable and deploy** klicken.
+5. Prüfen: [music-proxy.cloudflare-radio.workers.dev](https://music-proxy.cloudflare-radio.workers.dev/) zeigt unter `allowedOrigins` alle Adressen.
+
+Adressen genau so eintragen, wie sie in der Adresszeile stehen (mit `http://` bzw. `https://` und Port, ohne `/` am Ende).
+
 ## Installation auf GitHub Pages
 
 1. Repository forken oder die Dateien in ein eigenes Repository hochladen.

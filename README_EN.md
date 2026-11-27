@@ -76,6 +76,21 @@ A web page may only read data from other servers if the provider allows it (CORS
 
 For providers that block other websites, the site uses a small **helper**: the free Cloudflare Worker in [`proxy/worker.js`](proxy/worker.js). It fetches the titles and passes them only to this site (address in `js/config.js` → `METADATA_PROXY`). If you fork the site, set up your own worker or leave `METADATA_PROXY` empty – then only these providers lack titles.
 
+### Allowing more sites (e.g. Home Assistant)
+
+The worker only answers sites listed in the variable `ALLOWED_ORIGINS` (without the variable only `https://tbr-brd.github.io`). To add more addresses, e.g. for the [Home Assistant card](https://github.com/TBR-BRD/homeassistant-music-browser):
+
+1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Compute (Workers) → Workers & Pages** → worker **`music-proxy`**.
+2. **Settings** tab → **Variables and Secrets** → **+ Add**.
+3. Keep **Production** checked, **Key** `ALLOWED_ORIGINS`, **Value** all addresses comma-separated, leave **Secret** unchecked:
+   ```
+   https://tbr-brd.github.io,http://192.168.42.179:8123
+   ```
+4. Click **Add variable and deploy**.
+5. Check: [music-proxy.cloudflare-radio.workers.dev](https://music-proxy.cloudflare-radio.workers.dev/) lists all addresses under `allowedOrigins`.
+
+Enter addresses exactly as shown in the address bar (with `http://` or `https://` and port, without a trailing `/`).
+
 ## Hosting on GitHub Pages
 
 1. Fork the repository or upload the files to your own repository.
